@@ -1,0 +1,13 @@
+{
+  "id": 355,
+  "name": "User Interface Security Issues",
+  "status": "Stable",
+  "description": "This category identifies weaknesses related to user interface security.",
+  "relationships": [
+    {
+      "nature": "Has_Member",
+      "cwe_id": 79,
+      "view_id": 699
+    }
+  ]
+}

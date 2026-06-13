@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Weakness_Catalog Name="CWE Test Catalog" Version="4.10" Date="2024-01-01">
+    <Weaknesses>
+        <Weakness ID="664" Name="Improper Control of a Resource Through its Lifetime" Abstraction="Pillar" Structure="Simple" Status="Stable">
+            <Description>A weakness related to improper control of a resource through its lifetime.</Description>
+            <Likelihood_Of_Exploit>Medium</Likelihood_Of_Exploit>
+        </Weakness>
+        <Weakness ID="74" Name="Injection" Abstraction="Class" Structure="Simple" Status="Stable">
+            <Description>The software constructs all or part of a command, data structure, or record using externally-influenced input from an upstream component.</Description>
+            <Relationships>
+                <Relationship Nature="ChildOf" CWE_ID="664" View_ID="1000" Ordinal="Primary"/>
+            </Relationships>
+        </Weakness>
+        <Weakness ID="79" Name="Cross-site Scripting (XSS)" Abstraction="Base" Structure="Simple" Status="Stable">
+            <Description>Improper Neutralization of Input During Web Page Generation.</Description>
+            <Extended_Description>XSS vulnerabilities occur when...</Extended_Description>
+            <Likelihood_Of_Exploit>High</Likelihood_Of_Exploit>
+            <Relationships>
+                <Relationship Nature="ChildOf" CWE_ID="74" View_ID="1000" Ordinal="Primary"/>
+                <Relationship Nature="CanAlsoBe" CWE_ID="89" View_ID="1000"/>
+                <Relationship Nature="PeerOf" CWE_ID="352" View_ID="1000"/>
+            </Relationships>
+        </Weakness>
+        <Weakness ID="89" Name="SQL Injection" Abstraction="Base" Structure="Simple" Status="Stable">
+            <Description>Improper Neutralization of Special Elements used in an SQL Command.</Description>
+            <Likelihood_Of_Exploit>High</Likelihood_Of_Exploit>
+            <Relationships>
+                <Relationship Nature="ChildOf" CWE_ID="74" View_ID="1000" Ordinal="Primary"/>
+            </Relationships>
+        </Weakness>
+    </Weaknesses>
+    <Categories>
+        <Category ID="355" Name="User Interface Security Issues" Status="Stable">
+            <Summary>This category identifies weaknesses related to user interface security.</Summary>
+            <Relationships>
+                <Relationship Nature="Has_Member" CWE_ID="79" View_ID="699"/>
+            </Relationships>
+        </Category>
+    </Categories>
+    <Views>
+        <View ID="1000" Name="Research Concepts" Type="Graph" Status="Stable">
+            <Objective>This view organizes weaknesses by abstraction level.</Objective>
+            <Members>
+                <Has_Member CWE_ID="664" View_ID="1000" Direct="true"/>
+                <Has_Member CWE_ID="74" View_ID="1000" Direct="true"/>
+                <Has_Member CWE_ID="79" View_ID="1000" Direct="true"/>
+                <Has_Member CWE_ID="89" View_ID="1000" Direct="true"/>
+            </Members>
+        </View>
+        <View ID="699" Name="Software Development" Type="Graph" Status="Stable">
+            <Objective>This view organizes weaknesses by software development activity.</Objective>
+            <Members>
+                <Has_Member CWE_ID="79" View_ID="699" Direct="true"/>
+            </Members>
+        </View>
+    </Views>
+    <Compound_Elements>
+        <Compound_Element ID="680" Name="Integer Overflow to Buffer Overflow" Structure="Chain" Status="Stable">
+            <Description>This chain combines an integer overflow with a buffer overflow.</Description>
+            <Relationships>
+                <Relationship Nature="CanPrecede" CWE_ID="190" View_ID="1000"/>
+                <Relationship Nature="CanFollow" CWE_ID="119" View_ID="1000"/>
+            </Relationships>
+        </Compound_Element>
+    </Compound_Elements>
+</Weakness_Catalog>

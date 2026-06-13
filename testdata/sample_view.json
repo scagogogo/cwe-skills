@@ -1,0 +1,29 @@
+{
+  "id": 1000,
+  "name": "Research Concepts",
+  "type": "Graph",
+  "status": "Stable",
+  "description": "This view organizes weaknesses by abstraction level.",
+  "members": [
+    {
+      "cwe_id": 664,
+      "view_id": 1000,
+      "direct": true
+    },
+    {
+      "cwe_id": 74,
+      "view_id": 1000,
+      "direct": true
+    },
+    {
+      "cwe_id": 79,
+      "view_id": 1000,
+      "direct": true
+    },
+    {
+      "cwe_id": 89,
+      "view_id": 1000,
+      "direct": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": 79,
+  "name": "Cross-site Scripting (XSS)",
+  "abstraction": "Base",
+  "structure": "Simple",
+  "status": "Stable",
+  "description": "Improper Neutralization of Input During Web Page Generation",
+  "extended_description": "XSS vulnerabilities occur when untrusted input is included in a web page without proper validation or escaping.",
+  "likelihood_of_exploit": "High",
+  "common_consequences": [
+    {
+      "scopes": ["Confidentiality", "Integrity"],
+      "impacts": ["High"],
+      "likelihood": "High",
+      "note": "Can lead to session hijacking and data theft"
+    }
+  ],
+  "potential_mitigations": [
+    {
+      "phase": "Implementation",
+      "strategy": "Output Encoding",
+      "description": "Use and specify a strong output encoding for all output",
+      "effectiveness": "High"
+    }
+  ],
+  "relationships": [
+    {
+      "nature": "ChildOf",
+      "cwe_id": 74,
+      "view_id": 1000,
+      "ordinal": "Primary"
+    }
+  ],
+  "cwe_type": "weakness",
+  "url": "https://cwe.mitre.org/data/definitions/79.html"
+}
