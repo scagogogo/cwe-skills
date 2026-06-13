@@ -24,14 +24,51 @@ A comprehensive Go SDK for [CWE (Common Weakness Enumeration)](https://cwe.mitre
 
 ## Installation
 
+### SDK
+
 ```bash
 go get github.com/scagogogo/cwe-skills
 ```
 
-### CLI Installation
+### CLI — From GitHub Release (Recommended)
+
+Download the latest binary for your platform from [Releases](https://github.com/scagogogo/cwe-skills/releases/latest):
+
+```bash
+# Linux (amd64)
+curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_linux_x86_64.tar.gz | tar xz
+sudo mv cwe /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_darwin_aarch64.tar.gz | tar xz
+sudo mv cwe /usr/local/bin/
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_windows_x86_64.zip -OutFile cwe.zip
+Expand-Archive cwe.zip
+```
+
+### CLI — From Go Install
 
 ```bash
 go install github.com/scagogogo/cwe-skills/cmd/cwe@latest
+```
+
+### CLI — From Package Managers
+
+```bash
+# Homebrew (macOS/Linux)
+brew install scagogogo/tap/cwe-skills
+
+# Scoop (Windows)
+scoop bucket add scagogogo https://github.com/scagogogo/scoop-bucket
+scoop install cwe-skills
+```
+
+### Verify
+
+```bash
+cwe version
 ```
 
 ## Quick Start

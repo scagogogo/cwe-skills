@@ -24,14 +24,51 @@
 
 ## 安装
 
+### SDK
+
 ```bash
 go get github.com/scagogogo/cwe-skills
 ```
 
-### CLI安装
+### CLI — 从GitHub Release下载（推荐）
+
+从 [Releases](https://github.com/scagogogo/cwe-skills/releases/latest) 下载适合您平台的最新二进制文件：
+
+```bash
+# Linux (amd64)
+curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_linux_x86_64.tar.gz | tar xz
+sudo mv cwe /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_darwin_aarch64.tar.gz | tar xz
+sudo mv cwe /usr/local/bin/
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_windows_x86_64.zip -OutFile cwe.zip
+Expand-Archive cwe.zip
+```
+
+### CLI — 通过Go Install
 
 ```bash
 go install github.com/scagogogo/cwe-skills/cmd/cwe@latest
+```
+
+### CLI — 通过包管理器
+
+```bash
+# Homebrew (macOS/Linux)
+brew install scagogogo/tap/cwe-skills
+
+# Scoop (Windows)
+scoop bucket add scagogogo https://github.com/scagogogo/scoop-bucket
+scoop install cwe-skills
+```
+
+### 验证安装
+
+```bash
+cwe version
 ```
 
 ## 快速开始
