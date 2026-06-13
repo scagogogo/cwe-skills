@@ -1,66 +1,51 @@
 # AI Skills: CWE CLI
 
-This directory contains progressive AI skill documentation for the `cwe` CLI tool. Each skill document describes one capability area in a structured format that AI agents can use to understand and invoke the tool.
+Progressive AI skill documentation for the `cwe` CLI tool — a comprehensive command-line interface for [CWE (Common Weakness Enumeration)](https://cwe.mitre.org/).
 
-Skills are ordered from simple to advanced — start with #1 and progress as needed.
+Skills are ordered from simple to advanced. Each document covers CLI commands, SDK API, and examples.
 
 ## Available Skills
 
 | # | Skill | Command | Description |
 |---|-------|---------|-------------|
-| 1 | CWE ID Parsing & Validation | `parse`, `validate`, `format` | Parse, validate, and format CWE IDs |
-| 2 | CWE ID Extraction & Comparison | `extract`, `compare` | Extract CWE IDs from text, compare IDs |
-| 3 | Well-Known Lists | `wellknown` | Query CWE Top 25, OWASP Top 10, SANS Top 25 |
-| 4 | Enumeration Types | `enum` | List CWE enumeration values (abstraction, status, etc.) |
-| 5 | API: Get Weakness Details | `show` | Fetch CWE weakness details from MITRE API |
-| 6 | API: Relationship Queries | `relations` | Query parent/child/ancestor/descendant relationships |
-| 7 | API: Version Check | `api-version` | Check MITRE CWE API version |
-| 8 | Local: Search & Statistics | `search`, `stats` | Search and analyze offline XML catalogs |
-| 9 | SDK: In-Memory Registry | — | Store, index, and query CWE entries locally |
-| 10 | SDK: Relationship Navigation | — | Navigate CWE hierarchies and relationships |
-| 11 | SDK: Tree Construction | — | Build and traverse CWE hierarchy trees |
-| 12 | SDK: Serialization | — | JSON, XML, CSV import/export |
-
-## Global Flags
-
-| Flag | Short | Default | Description |
-|------|-------|---------|-------------|
-| `--output` | `-o` | `text` | Output format: `text` or `json` |
+| 1 | [CWE ID Parsing & Validation](01-cwe-id-parsing-validation.md) | `parse`, `validate`, `format` | Parse, validate, format CWE IDs |
+| 2 | [CWE ID Extraction & Comparison](02-cwe-id-extraction-comparison.md) | `extract`, `compare` | Extract from text, compare IDs |
+| 3 | [Well-Known Lists](03-well-known-lists.md) | `wellknown` | CWE Top 25, OWASP Top 10, SANS Top 25 |
+| 4 | [Enumeration Types](04-enumeration-types.md) | `enum` | Abstraction, Status, Relationship types |
+| 5 | [API: Get Weakness Details](05-api-show-weakness.md) | `show` | Fetch from MITRE API |
+| 6 | [API: Relationship Queries](06-api-relationships.md) | `relations` | Parent/child/ancestor/descendant via API |
+| 7 | [API: Version Check](07-api-version.md) | `api-version` | Check MITRE API version |
+| 8 | [Local: Search & Filter](08-local-search-filter.md) | `search`, `filter` | Search & multi-criteria filter offline |
+| 9 | [Local: Registry Operations](09-local-registry.md) | `registry` | Load XML, query, export local data |
+| 10 | [Local: Relationship Navigation](10-local-navigation.md) | `nav` | Navigate relationships offline |
+| 11 | [Local: Tree Construction](11-local-tree.md) | `tree` | Build & traverse hierarchy trees |
+| 12 | [SDK: Serialization](12-sdk-serialization.md) | — | JSON, XML, CSV import/export |
 
 ## Installation
 
 ### From GitHub Release (Recommended)
-
-Download the latest binary for your platform from [GitHub Releases](https://github.com/scagogogo/cwe-skills/releases/latest):
 
 ```bash
 # Linux (amd64)
 curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_linux_x86_64.tar.gz | tar xz
 sudo mv cwe /usr/local/bin/
 
-# Linux (arm64)
-curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_linux_aarch64.tar.gz | tar xz
-sudo mv cwe /usr/local/bin/
-
 # macOS (Apple Silicon)
 curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_darwin_aarch64.tar.gz | tar xz
 sudo mv cwe /usr/local/bin/
 
-# macOS (Intel)
-curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_darwin_x86_64.tar.gz | tar xz
-sudo mv cwe /usr/local/bin/
-
-# Windows (amd64) — PowerShell
+# Windows (PowerShell)
 Invoke-WebRequest -Uri https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-skills_latest_windows_x86_64.zip -OutFile cwe.zip
 Expand-Archive cwe.zip
 ```
 
-### Specific Version
-
-Replace `latest` with a specific tag (e.g., `v0.1.0`) in the download URL:
+### From Source
 
 ```bash
-curl -sL https://github.com/scagogogo/cwe-skills/releases/download/v0.1.0/cwe-skills_v0.1.0_linux_x86_64.tar.gz | tar xz
+git clone https://github.com/scagogogo/cwe-skills.git
+cd cwe-skills
+go build -o cwe ./cmd/cwe/
+sudo mv cwe /usr/local/bin/
 ```
 
 ### From Go Install
@@ -78,36 +63,21 @@ brew install scagogogo/tap/cwe-skills
 # Scoop (Windows)
 scoop bucket add scagogogo https://github.com/scagogogo/scoop-bucket
 scoop install cwe-skills
-
-# DEB package (Ubuntu/Debian)
-sudo dpkg -i cwe-skills_*_linux_amd64.deb
-
-# RPM package (CentOS/RHEL/Fedora)
-sudo rpm -i cwe-skills-*_linux_amd64.rpm
-
-# APK package (Alpine)
-sudo apk add cwe-skills_*_linux_amd64.apk
 ```
 
-### SDK Installation
+### SDK
 
 ```bash
 go get github.com/scagogogo/cwe-skills
 ```
 
-### Verify Installation
+### Verify
 
 ```bash
 cwe version
-# Output:
-# CWE CLI:     v0.1.0
-# CWE SDK:     v0.0.1
-# Go Version:  go1.25.0
 ```
 
 ## Supported Platforms
-
-Pre-built binaries are available for:
 
 | OS | Architectures |
 |----|---------------|
@@ -124,70 +94,52 @@ Pre-built binaries are available for:
 ## Quick Start
 
 ```bash
-# Parse a CWE ID
-cwe parse CWE-79
+# Parse & validate
+cwe parse CWE-79 89
+cwe validate CWE-79
 
-# Validate CWE IDs
-cwe validate CWE-79 CWE-89
-
-# Format to standard form
+# Format & extract
 cwe format 79 89 352
-
-# Extract from text
-cwe extract "Affected by CWE-79 and CWE-89"
-
-# Compare two IDs
-cwe compare CWE-79 CWE-89
+cwe extract "CWE-79 and CWE-89 affected"
 
 # Check well-known lists
 cwe wellknown top25
 cwe wellknown check CWE-79
 
-# List enumeration values
-cwe enum abstraction
-
-# Fetch weakness from MITRE API
+# Query MITRE API
 cwe show CWE-79
-
-# Query relationships
 cwe relations parents CWE-79
 
-# Search offline XML
+# Local operations (requires XML catalog)
 cwe search --xml cwec_latest.xml --keyword Injection
+cwe filter --xml cwec_latest.xml --abstraction Base --status Stable
+cwe registry get CWE-79 --xml cwec_latest.xml
+cwe nav siblings CWE-79 --xml cwec_latest.xml
+cwe tree build CWE-1 --xml cwec_latest.xml
 
-# Get API version
-cwe api-version
+# All commands support JSON output
+cwe parse CWE-79 -o json
 ```
 
-## JSON Output Schema
+## Global Flags
 
-All commands support `-o json` for structured output. Common patterns:
-
-**Success response** — each command returns its own typed structure (see individual skill docs).
-
-**Error response** — errors appear inline in the result array for batch operations, or as CLI errors:
-
-```json
-{"error": "string"}
-```
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--output` | `-o` | `text` | Output format: `text` or `json` |
 
 ## SDK Quick Start
 
 ```go
 import cwepkg "github.com/scagogogo/cwe-skills"
 
-// Parse CWE ID
 id, _ := cwepkg.ParseCWEID("CWE-79")
 
-// Query MITRE API
 client := cwepkg.NewAPIClient()
 weakness, _ := client.GetWeakness(ctx, 79)
 
-// Local registry
 registry := cwepkg.NewRegistry()
 registry.Register(&cwepkg.CWE{ID: 79, Name: "XSS", Abstraction: cwepkg.AbstractionBase})
 registry.BuildIndexes()
 
-// Check well-known lists
 cwepkg.IsInTop25(79) // true
 ```
