@@ -8,12 +8,20 @@ import (
 )
 
 var (
-	xmlFilePath    string
-	searchKeyword  string
-	searchAbstr    string
-	searchStatus   string
-	searchLikelihood string
-	searchStructure  string
+	xmlFilePath       string
+	searchKeyword     string
+	searchAbstr       string
+	searchStatus      string
+	searchLikelihood  string
+	searchStructure   string
+	searchScope       string
+	searchTopLevel    bool
+	searchBaseOnly    bool
+	searchChains      bool
+	searchComposites  bool
+	searchSort        string
+	searchGroupBy     string
+	searchDedup       bool
 )
 
 // searchCmd 本地搜索CWE条目
@@ -28,7 +36,11 @@ var searchCmd = &cobra.Command{
 示例：
   cwe search --xml cwec_latest.xml --keyword "Injection"
   cwe search --xml cwec_latest.xml --abstraction Base
-  cwe search --xml cwec_latest.xml --status Stable`,
+  cwe search --xml cwec_latest.xml --status Stable --likelihood High
+  cwe search --xml cwec_latest.xml --top-level
+  cwe search --xml cwec_latest.xml --scope Confidentiality
+  cwe search --xml cwec_latest.xml --sort name
+  cwe search --xml cwec_latest.xml --group-by abstraction`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if xmlFilePath == "" {
 			return fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
@@ -68,9 +80,43 @@ var searchCmd = &cobra.Command{
 				return fmt.Errorf("无效的结构类型: %w", err)
 			}
 			results = cwepkg.FindByStructure(registry, st)
+		} else if searchScope != "" {
+			sc, err := cwepkg.ParseConsequenceScope(searchScope)
+			if err != nil {
+				return fmt.Errorf("无效的后果范围: %w", err)
+			}
+			results = cwepkg.FindByConsequenceScope(registry, sc)
+		} else if searchTopLevel {
+			results = cwepkg.FindTopLevel(registry)
+		} else if searchBaseOnly {
+			results = cwepkg.FindBaseWeaknesses(registry)
+		} else if searchChains {
+			results = cwepkg.FindChains(registry)
+		} else if searchComposites {
+			results = cwepkg.FindComposites(registry)
 		} else {
-			// 无过滤条件，返回所有条目
 			results = registry.GetAll()
+		}
+
+		if searchSort != "" {
+			switch searchSort {
+			case "id":
+				cwepkg.SortByID(results)
+			case "name":
+				cwepkg.SortByName(results)
+			case "abstraction":
+				cwepkg.SortByAbstraction(results)
+			default:
+				return fmt.Errorf("不支持的排序字段: %s (支持: id, name, abstraction)", searchSort)
+			}
+		}
+
+		if searchDedup {
+			results = cwepkg.Deduplicate(results)
+		}
+
+		if searchGroupBy != "" {
+			return printGroupedResults(cmd, results)
 		}
 
 		if outputFormat == "json" {
@@ -86,13 +132,103 @@ var searchCmd = &cobra.Command{
 	},
 }
 
+// filterCmd 多条件过滤
+var filterCmd = &cobra.Command{
+	Use:   "filter",
+	Short: "多条件过滤CWE条目",
+	Long: `使用多个条件组合过滤CWE条目。所有条件之间为AND关系。
+
+示例：
+  cwe filter --xml cwec_latest.xml --abstraction Base --status Stable --keyword Injection
+  cwe filter --xml cwec_latest.xml --likelihood High --scope Confidentiality`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if xmlFilePath == "" {
+			return fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
+		}
+
+		parser := cwepkg.NewXMLParser()
+		registry, err := parser.ParseFile(xmlFilePath)
+		if err != nil {
+			return fmt.Errorf("解析XML文件失败: %w", err)
+		}
+
+		all := registry.GetAll()
+		opts := cwepkg.FilterOption{}
+
+		if v, _ := cmd.Flags().GetString("keyword"); v != "" {
+			opts.Keyword = v
+		}
+		if v, _ := cmd.Flags().GetString("abstraction"); v != "" {
+			abstr, err := cwepkg.ParseAbstraction(v)
+			if err != nil {
+				return fmt.Errorf("无效的抽象层级: %w", err)
+			}
+			opts.Abstraction = abstr
+		}
+		if v, _ := cmd.Flags().GetString("status"); v != "" {
+			st, err := cwepkg.ParseStatus(v)
+			if err != nil {
+				return fmt.Errorf("无效的状态: %w", err)
+			}
+			opts.Status = st
+		}
+		if v, _ := cmd.Flags().GetString("likelihood"); v != "" {
+			lh, err := cwepkg.ParseLikelihoodOfExploit(v)
+			if err != nil {
+				return fmt.Errorf("无效的利用可能性: %w", err)
+			}
+			opts.Likelihood = lh
+		}
+		if v, _ := cmd.Flags().GetString("scope"); v != "" {
+			sc, err := cwepkg.ParseConsequenceScope(v)
+			if err != nil {
+				return fmt.Errorf("无效的后果范围: %w", err)
+			}
+			opts.Scope = sc
+		}
+		if v, _ := cmd.Flags().GetString("structure"); v != "" {
+			st, err := cwepkg.ParseStructure(v)
+			if err != nil {
+				return fmt.Errorf("无效的结构类型: %w", err)
+			}
+			opts.Structure = st
+		}
+
+		results := cwepkg.Filter(all, opts)
+
+		if v, _ := cmd.Flags().GetString("sort"); v != "" {
+			switch v {
+			case "id":
+				cwepkg.SortByID(results)
+			case "name":
+				cwepkg.SortByName(results)
+			case "abstraction":
+				cwepkg.SortByAbstraction(results)
+			}
+		}
+
+		if v, _ := cmd.Flags().GetString("group-by"); v != "" {
+			return printGroupedResults(cmd, results)
+		}
+
+		if outputFormat == "json" {
+			return printJSON(cmd, results)
+		}
+
+		fmt.Fprintf(cmd.OutOrStdout(), "过滤结果 (%d 项):\n\n", len(results))
+		for _, cwe := range results {
+			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s [%s, %s]\n",
+				cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name, cwe.Abstraction, cwe.Status)
+		}
+		return nil
+	},
+}
+
 // statsCmd 统计CWE数据
 var statsCmd = &cobra.Command{
 	Use:   "stats",
 	Short: "统计CWE数据",
 	Long: `从本地XML数据源统计CWE数据分布。
-
-需要先通过 --xml 参数指定MITRE CWE XML目录文件路径。
 
 示例：
   cwe stats --xml cwec_latest.xml`,
@@ -136,16 +272,91 @@ var statsCmd = &cobra.Command{
 	},
 }
 
+func printGroupedResults(cmd *cobra.Command, results []*cwepkg.CWE) error {
+	if outputFormat == "json" {
+		// Convert typed group maps to string-keyed maps for JSON
+		groupStr := make(map[string]interface{})
+		switch searchGroupBy {
+		case "abstraction":
+			for k, v := range cwepkg.GroupByAbstraction(results) {
+				groupStr[string(k)] = v
+			}
+		case "status":
+			for k, v := range cwepkg.GroupByStatus(results) {
+				groupStr[string(k)] = v
+			}
+		case "likelihood":
+			for k, v := range cwepkg.GroupByLikelihood(results) {
+				groupStr[string(k)] = v
+			}
+		default:
+			return fmt.Errorf("不支持的分组字段: %s (支持: abstraction, status, likelihood)", searchGroupBy)
+		}
+		return printJSON(cmd, groupStr)
+	}
+
+	switch searchGroupBy {
+	case "abstraction":
+		for group, items := range cwepkg.GroupByAbstraction(results) {
+			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
+			for _, cwe := range items {
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+			}
+		}
+	case "status":
+		for group, items := range cwepkg.GroupByStatus(results) {
+			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
+			for _, cwe := range items {
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+			}
+		}
+	case "likelihood":
+		for group, items := range cwepkg.GroupByLikelihood(results) {
+			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
+			for _, cwe := range items {
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+			}
+		}
+	default:
+		return fmt.Errorf("不支持的分组字段: %s (支持: abstraction, status, likelihood)", searchGroupBy)
+	}
+	return nil
+}
+
 func init() {
+	// search flags
 	searchCmd.Flags().StringVarP(&xmlFilePath, "xml", "x", "", "CWE XML目录文件路径")
 	searchCmd.Flags().StringVarP(&searchKeyword, "keyword", "k", "", "按关键字搜索")
-	searchCmd.Flags().StringVarP(&searchAbstr, "abstraction", "a", "", "按抽象层级搜索 (Class/Base/Variant/Pillar)")
+	searchCmd.Flags().StringVarP(&searchAbstr, "abstraction", "a", "", "按抽象层级搜索 (Pillar/Class/Base/Variant)")
 	searchCmd.Flags().StringVarP(&searchStatus, "status", "s", "", "按状态搜索 (Stable/Draft/Deprecated)")
 	searchCmd.Flags().StringVarP(&searchLikelihood, "likelihood", "l", "", "按利用可能性搜索 (High/Medium/Low)")
 	searchCmd.Flags().StringVarP(&searchStructure, "structure", "t", "", "按结构类型搜索 (Simple/Chain/Composite)")
+	searchCmd.Flags().StringVarP(&searchScope, "scope", "", "", "按后果范围搜索 (Confidentiality/Integrity/Availability)")
+	searchCmd.Flags().BoolVar(&searchTopLevel, "top-level", false, "只显示顶层(Pillar)弱点")
+	searchCmd.Flags().BoolVar(&searchBaseOnly, "base-weaknesses", false, "只显示基础(Base)弱点")
+	searchCmd.Flags().BoolVar(&searchChains, "chains", false, "只显示链式弱点")
+	searchCmd.Flags().BoolVar(&searchComposites, "composites", false, "只显示复合弱点")
+	searchCmd.Flags().StringVar(&searchSort, "sort", "", "排序字段 (id/name/abstraction)")
+	searchCmd.Flags().StringVar(&searchGroupBy, "group-by", "", "分组字段 (abstraction/status/likelihood)")
+	searchCmd.Flags().BoolVar(&searchDedup, "dedup", false, "去重")
 
+	// filter flags (use local vars)
+	var filterKeyword, filterAbstr, filterStatus, filterLikelihood, filterStructure, filterScope string
+	var filterSort, filterGroupBy string
+	filterCmd.Flags().StringVarP(&xmlFilePath, "xml", "x", "", "CWE XML目录文件路径")
+	filterCmd.Flags().StringVarP(&filterKeyword, "keyword", "k", "", "按关键字搜索")
+	filterCmd.Flags().StringVarP(&filterAbstr, "abstraction", "a", "", "按抽象层级搜索")
+	filterCmd.Flags().StringVarP(&filterStatus, "status", "s", "", "按状态搜索")
+	filterCmd.Flags().StringVarP(&filterLikelihood, "likelihood", "l", "", "按利用可能性搜索")
+	filterCmd.Flags().StringVarP(&filterStructure, "structure", "t", "", "按结构类型搜索")
+	filterCmd.Flags().StringVarP(&filterScope, "scope", "", "", "按后果范围搜索")
+	filterCmd.Flags().StringVar(&filterSort, "sort", "", "排序字段 (id/name/abstraction)")
+	filterCmd.Flags().StringVar(&filterGroupBy, "group-by", "", "分组字段 (abstraction/status/likelihood)")
+
+	// stats flags
 	statsCmd.Flags().StringVarP(&xmlFilePath, "xml", "x", "", "CWE XML目录文件路径")
 
 	rootCmd.AddCommand(searchCmd)
+	rootCmd.AddCommand(filterCmd)
 	rootCmd.AddCommand(statsCmd)
 }
