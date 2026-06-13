@@ -9,7 +9,6 @@ import (
 )
 
 var treeXMLPath string
-var treeMaxDepth int
 
 // treeCmd 树构建命令组
 var treeCmd = &cobra.Command{
