@@ -10,13 +10,13 @@ type Relationship struct {
 	// Nature 关系类型，如ChildOf、ParentOf、CanPrecede等
 	Nature RelationshipNature `json:"nature" xml:"Nature,attr"`
 	// CWEID 关系目标的CWE ID
-	CWEID int `json:"cwe_id" xml:"CWE_ID"`
+	CWEID int `json:"cweId" xml:"CWE_ID"`
 	// ViewID 关系所属的视图ID，可选
-	ViewID int `json:"view_id,omitempty" xml:"View_ID,omitempty"`
+	ViewID int `json:"viewId,omitempty" xml:"View_ID,omitempty"`
 	// Ordinal 关系的序数标记，可选，如"Primary"
 	Ordinal string `json:"ordinal,omitempty" xml:"Ordinal,omitempty"`
 	// ChainID 关系所属的链ID，可选
-	ChainID int `json:"chain_id,omitempty" xml:"Chain_ID,omitempty"`
+	ChainID int `json:"chainId,omitempty" xml:"Chain_ID,omitempty"`
 }
 
 // IsHierarchical 检查关系是否为层级关系。

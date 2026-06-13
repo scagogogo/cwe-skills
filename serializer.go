@@ -198,6 +198,7 @@ func UnmarshalCSV(data []byte) ([]*CWE, error) {
 	}
 
 	reader := csv.NewReader(bytes.NewReader(data))
+	reader.FieldsPerRecord = -1 // 允许列数不一致
 
 	// 读取表头
 	header, err := reader.Read()

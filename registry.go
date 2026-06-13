@@ -374,6 +374,13 @@ func (r *Registry) BuildIndexes() {
 		}
 	}
 
+	// 去重索引中的重复ID
+	r.parentIndex = dedupIntMap(r.parentIndex)
+	r.childIndex = dedupIntMap(r.childIndex)
+	r.peerIndex = dedupIntMap(r.peerIndex)
+	r.memberIndex = dedupIntMap(r.memberIndex)
+	r.memberOfIndex = dedupIntMap(r.memberOfIndex)
+
 	r.indexesBuilt = true
 }
 
@@ -572,4 +579,21 @@ func copyIntSlice(src []int) []int {
 	dst := make([]int, len(src))
 	copy(dst, src)
 	return dst
+}
+
+// dedupIntMap 对map[int][]int中的每个切片去重。
+func dedupIntMap(m map[int][]int) map[int][]int {
+	result := make(map[int][]int, len(m))
+	for k, v := range m {
+		seen := make(map[int]bool, len(v))
+		deduped := make([]int, 0, len(v))
+		for _, id := range v {
+			if !seen[id] {
+				seen[id] = true
+				deduped = append(deduped, id)
+			}
+		}
+		result[k] = deduped
+	}
+	return result
 }
