@@ -1,8 +1,5 @@
 version: "2"
 
-run:
-  timeout: 5m
-
 linters:
   enable:
     - errcheck
@@ -14,14 +11,12 @@ linters:
     - misspell
     - gofmt
 
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-  misspell:
-    locale: US
+formatters:
+  enable:
+    - gofmt
 
-issues:
-  exclude-rules:
+exclusions:
+  rules:
     - path: _test\.go
       linters:
         - errcheck
