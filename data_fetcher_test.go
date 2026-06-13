@@ -3,7 +3,6 @@ package cwe
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -44,7 +43,7 @@ func TestNewBasicFetcher(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			f := NewBasicFetcher(tt.client)
 			if f == nil {
-				t.Error("NewBasicFetcher() returned nil")
+				t.Fatal("NewBasicFetcher() returned nil")
 			}
 			if f.client == nil {
 				t.Error("BasicFetcher.client should not be nil")
@@ -503,7 +502,7 @@ func TestNewMultipleFetcher(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			f := NewMultipleFetcher(tt.client)
 			if f == nil {
-				t.Error("NewMultipleFetcher() returned nil")
+				t.Fatal("NewMultipleFetcher() returned nil")
 			}
 			if f.client == nil {
 				t.Error("MultipleFetcher.client should not be nil")
@@ -696,7 +695,7 @@ func TestNewTreeFetcher(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			f := NewTreeFetcher(tt.client, tt.registry, tt.maxDepth)
 			if f == nil {
-				t.Error("NewTreeFetcher() returned nil")
+				t.Fatal("NewTreeFetcher() returned nil")
 			}
 			if f.client == nil {
 				t.Error("TreeFetcher.client should not be nil")
@@ -1448,7 +1447,7 @@ func TestTreeFetcher_FetchFullTree_ErrorOnDescendants(t *testing.T) {
 			resp := struct {
 				Data json.RawMessage `json:"Data"`
 			}{
-				Data: json.RawMessage(fmt.Sprintf(`[{"id":79,"name":"XSS","description":"desc","cwe_type":"weakness"}]`)),
+				Data: json.RawMessage(`[{"id":79,"name":"XSS","description":"desc","cwe_type":"weakness"}]`),
 			}
 			json.NewEncoder(w).Encode(resp)
 		case "/cwe/79/parents":

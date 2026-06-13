@@ -356,10 +356,11 @@ func (r *Registry) BuildIndexes() {
 	// 从类别关系构建成员索引
 	for _, cat := range r.categories {
 		for _, rel := range cat.Relationships {
-			if rel.Nature == RelationshipHasMember {
+			switch rel.Nature {
+			case RelationshipHasMember:
 				r.memberIndex[cat.ID] = append(r.memberIndex[cat.ID], rel.CWEID)
 				r.memberOfIndex[rel.CWEID] = append(r.memberOfIndex[rel.CWEID], cat.ID)
-			} else if rel.Nature == RelationshipMemberOf {
+			case RelationshipMemberOf:
 				r.memberOfIndex[cat.ID] = append(r.memberOfIndex[cat.ID], rel.CWEID)
 				r.memberIndex[rel.CWEID] = append(r.memberIndex[rel.CWEID], cat.ID)
 			}
