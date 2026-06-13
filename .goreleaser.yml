@@ -1,0 +1,162 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: cwe
+    main: ./cmd/cwe/
+    binary: cwe
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.cliVersion={{.Version}}
+      - -X main.cliGitCommit={{.Commit}}
+      - -X main.cliBuildDate={{.Date}}
+    targets:
+      # Linux
+      - linux_amd64
+      - linux_386
+      - linux_arm64
+      - linux_arm_5
+      - linux_arm_6
+      - linux_arm_7
+      - linux_mips
+      - linux_mipsle
+      - linux_mips64
+      - linux_mips64le
+      - linux_ppc64
+      - linux_ppc64le
+      - linux_s390x
+      - linux_riscv64
+      # macOS
+      - darwin_amd64
+      - darwin_arm64
+      # Windows
+      - windows_amd64
+      - windows_386
+      - windows_arm64
+      - windows_arm_5
+      - windows_arm_6
+      - windows_arm_7
+      # FreeBSD
+      - freebsd_amd64
+      - freebsd_386
+      - freebsd_arm64
+      - freebsd_arm_5
+      - freebsd_arm_6
+      - freebsd_arm_7
+      # NetBSD
+      - netbsd_amd64
+      - netbsd_386
+      - netbsd_arm_6
+      - netbsd_arm_7
+      # OpenBSD
+      - openbsd_amd64
+      - openbsd_386
+      - openbsd_arm64
+      - openbsd_arm_7
+      # AIX
+      - aix_ppc64
+      # Illumos
+      - illumos_amd64
+      # Solaris
+      - solaris_amd64
+
+archives:
+  - id: cwe-archive
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm64" }}aarch64
+      {{- else if eq .Arch "arm" }}arm
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+      {{- if .Mips }}_{{ .Mips }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - README.zh.md
+      - LICENSE
+      - docs/**
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+
+release:
+  github:
+    owner: scagogogo
+    name: cwe-skills
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## CWE Skills CLI {{ .Tag }}
+
+    Full-featured CLI for CWE (Common Weakness Enumeration).
+  footer: |
+    **Installation**: See [README](https://github.com/scagogogo/cwe-skills#installation) for details.
+
+    **SDK**: `go get github.com/scagogogo/cwe-skills@{{ .Tag }}`
+
+nfpms:
+  - id: cwe-packages
+    package_name: cwe-skills
+    file_name_template: "{{ .ConventionalFileName }}"
+    homepage: https://github.com/scagogogo/cwe-skills
+    description: CWE (Common Weakness Enumeration) CLI tool and SDK
+    maintainer: scagogogo <scagogogo@gmail.com>
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+    section: utils
+    priority: optional
+
+brews:
+  - name: cwe-skills
+    homepage: https://github.com/scagogogo/cwe-skills
+    description: CWE (Common Weakness Enumeration) CLI tool and SDK
+    license: MIT
+    repository:
+      owner: scagogogo
+      name: homebrew-tap
+    commit_author:
+      name: scagogogo
+      email: scagogogo@gmail.com
+    directory: Formula
+    test: |
+      system "#{bin}/cwe", "version"
+    install: |
+      bin.install "cwe"
+
+scoop:
+  bucket:
+    owner: scagogogo
+    name: scoop-bucket
+  homepage: https://github.com/scagogogo/cwe-skills
+  description: CWE (Common Weakness Enumeration) CLI tool and SDK
+  license: MIT

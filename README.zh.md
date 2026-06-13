@@ -1,7 +1,7 @@
 # CWE SDK for Go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/cwe.svg)](https://pkg.go.dev/github.com/scagogogo/cwe)
-[![Go Report Card](https://goreportcard.com/badge/github.com/scagogogo/cwe)](https://goreportcard.com/report/github.com/scagogogo/cwe)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/cwe-skills.svg)](https://pkg.go.dev/github.com/scagogogo/cwe-skills)
+[![Go Report Card](https://goreportcard.com/badge/github.com/scagogogo/cwe-skills)](https://goreportcard.com/report/github.com/scagogogo/cwe-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 一个完善的 [CWE（通用缺陷枚举）](https://cwe.mitre.org/) Go SDK，为构建网络安全产品提供完整的API支持。
@@ -25,13 +25,13 @@
 ## 安装
 
 ```bash
-go get github.com/scagogogo/cwe
+go get github.com/scagogogo/cwe-skills
 ```
 
 ### CLI安装
 
 ```bash
-go install github.com/scagogogo/cwe/cmd/cwe@latest
+go install github.com/scagogogo/cwe-skills/cmd/cwe@latest
 ```
 
 ## 快速开始
@@ -69,7 +69,7 @@ package main
 
 import (
     "fmt"
-    "github.com/scagogogo/cwe"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {

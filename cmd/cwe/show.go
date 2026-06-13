@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	cwepkg "github.com/scagogogo/cwe"
+	cwepkg "github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 

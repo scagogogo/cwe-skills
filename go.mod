@@ -1,4 +1,4 @@
-module github.com/scagogogo/cwe
+module github.com/scagogogo/cwe-skills
 
 go 1.25.0
 

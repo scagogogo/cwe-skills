@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	cwepkg "github.com/scagogogo/cwe"
+	cwepkg "github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 

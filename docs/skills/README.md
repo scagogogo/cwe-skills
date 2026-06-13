@@ -30,7 +30,7 @@ Skills are ordered from simple to advanced — start with #1 and progress as nee
 ## Installation
 
 ```bash
-go install github.com/scagogogo/cwe/cmd/cwe@latest
+go install github.com/scagogogo/cwe-skills/cmd/cwe@latest
 ```
 
 ## Quick Start
@@ -86,7 +86,7 @@ All commands support `-o json` for structured output. Common patterns:
 ## SDK Quick Start
 
 ```go
-import cwepkg "github.com/scagogogo/cwe"
+import cwepkg "github.com/scagogogo/cwe-skills"
 
 // Parse CWE ID
 id, _ := cwepkg.ParseCWEID("CWE-79")
