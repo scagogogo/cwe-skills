@@ -1,4 +1,4 @@
-package cwe
+package cweskills
 
 import (
 	"context"

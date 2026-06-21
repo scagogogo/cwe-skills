@@ -42,14 +42,14 @@ JSON output:
 Each enumeration has a `Parse*` function that converts a string to the typed value:
 
 ```go
-abstr, err := cwepkg.ParseAbstraction("Base")      // AbstractionBase
-status, err := cwepkg.ParseStatus("Stable")         // StatusStable
-nature, err := cwepkg.ParseRelationshipNature("ChildOf") // RelationshipChildOf
-structure, err := cwepkg.ParseStructure("Chain")     // StructureChain
-likelihood, err := cwepkg.ParseLikelihoodOfExploit("High") // LikelihoodHigh
-scope, err := cwepkg.ParseConsequenceScope("Confidentiality") // ScopeConfidentiality
-impact, err := cwepkg.ParseConsequenceImpact("High") // ImpactHigh
-viewType, err := cwepkg.ParseViewType("Graph")       // ViewTypeGraph
+abstr, err := cweskills.ParseAbstraction("Base")      // AbstractionBase
+status, err := cweskills.ParseStatus("Stable")         // StatusStable
+nature, err := cweskills.ParseRelationshipNature("ChildOf") // RelationshipChildOf
+structure, err := cweskills.ParseStructure("Chain")     // StructureChain
+likelihood, err := cweskills.ParseLikelihoodOfExploit("High") // LikelihoodHigh
+scope, err := cweskills.ParseConsequenceScope("Confidentiality") // ScopeConfidentiality
+impact, err := cweskills.ParseConsequenceImpact("High") // ImpactHigh
+viewType, err := cweskills.ParseViewType("Graph")       // ViewTypeGraph
 ```
 
 Returns an error for invalid values.
@@ -66,14 +66,14 @@ All enumeration types implement `IsValid()` and `String()`.
 ### All Values
 
 ```go
-cwepkg.AllAbstractionValues()          // []Abstraction
-cwepkg.AllStructureValues()            // []Structure
-cwepkg.AllStatusValues()               // []Status
-cwepkg.AllLikelihoodOfExploitValues()  // []LikelihoodOfExploit
-cwepkg.AllRelationshipNatureValues()   // []RelationshipNature
-cwepkg.AllConsequenceScopeValues()     // []ConsequenceScope
-cwepkg.AllConsequenceImpactValues()    // []ConsequenceImpact
-cwepkg.AllViewTypeValues()             // []ViewType
+cweskills.AllAbstractionValues()          // []Abstraction
+cweskills.AllStructureValues()            // []Structure
+cweskills.AllStatusValues()               // []Status
+cweskills.AllLikelihoodOfExploitValues()  // []LikelihoodOfExploit
+cweskills.AllRelationshipNatureValues()   // []RelationshipNature
+cweskills.AllConsequenceScopeValues()     // []ConsequenceScope
+cweskills.AllConsequenceImpactValues()    // []ConsequenceImpact
+cweskills.AllViewTypeValues()             // []ViewType
 ```
 
 ### Ordering Functions
@@ -81,18 +81,18 @@ cwepkg.AllViewTypeValues()             // []ViewType
 Some enumerations have natural ordering:
 
 ```go
-order := cwepkg.AbstractionOrder(cwepkg.AbstractionPillar)   // 0
-order := cwepkg.AbstractionOrder(cwepkg.AbstractionClass)    // 1
-order := cwepkg.AbstractionOrder(cwepkg.AbstractionBase)     // 2
-order := cwepkg.AbstractionOrder(cwepkg.AbstractionVariant)  // 3
+order := cweskills.AbstractionOrder(cweskills.AbstractionPillar)   // 0
+order := cweskills.AbstractionOrder(cweskills.AbstractionClass)    // 1
+order := cweskills.AbstractionOrder(cweskills.AbstractionBase)     // 2
+order := cweskills.AbstractionOrder(cweskills.AbstractionVariant)  // 3
 
-order := cwepkg.LikelihoodOrder(cwepkg.LikelihoodLow)    // 0
-order := cwepkg.LikelihoodOrder(cwepkg.LikelihoodMedium) // 1
-order := cwepkg.LikelihoodOrder(cwepkg.LikelihoodHigh)   // 2
+order := cweskills.LikelihoodOrder(cweskills.LikelihoodLow)    // 0
+order := cweskills.LikelihoodOrder(cweskills.LikelihoodMedium) // 1
+order := cweskills.LikelihoodOrder(cweskills.LikelihoodHigh)   // 2
 
-order := cwepkg.ImpactOrder(cwepkg.ImpactLow)    // 0
-order := cwepkg.ImpactOrder(cwepkg.ImpactMedium) // 1
-order := cwepkg.ImpactOrder(cwepkg.ImpactHigh)   // 2
+order := cweskills.ImpactOrder(cweskills.ImpactLow)    // 0
+order := cweskills.ImpactOrder(cweskills.ImpactMedium) // 1
+order := cweskills.ImpactOrder(cweskills.ImpactHigh)   // 2
 ```
 
 ### Relationship Nature Categories

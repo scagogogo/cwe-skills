@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -34,14 +34,14 @@ func init() {
 		short  string
 		values []string
 	}{
-		{"abstraction", "抽象层级 (Class/Base/Variant/Pillar)", stringifySlice(cwepkg.AllAbstractionValues())},
-		{"structure", "结构类型 (Simple/Chain/Composite)", stringifySlice(cwepkg.AllStructureValues())},
-		{"status", "状态 (Stable/Draft/Deprecated等)", stringifySlice(cwepkg.AllStatusValues())},
-		{"likelihood", "利用可能性 (High/Medium/Low)", stringifySlice(cwepkg.AllLikelihoodOfExploitValues())},
-		{"relationship", "关系类型 (ChildOf/ParentOf/CanPrecede等)", stringifySlice(cwepkg.AllRelationshipNatureValues())},
-		{"scope", "后果范围 (Confidentiality/Integrity/Availability)", stringifySlice(cwepkg.AllConsequenceScopeValues())},
-		{"impact", "后果影响 (High/Medium/Low)", stringifySlice(cwepkg.AllConsequenceImpactValues())},
-		{"viewtype", "视图类型 (Graph/Slice)", stringifySlice(cwepkg.AllViewTypeValues())},
+		{"abstraction", "抽象层级 (Class/Base/Variant/Pillar)", stringifySlice(cweskills.AllAbstractionValues())},
+		{"structure", "结构类型 (Simple/Chain/Composite)", stringifySlice(cweskills.AllStructureValues())},
+		{"status", "状态 (Stable/Draft/Deprecated等)", stringifySlice(cweskills.AllStatusValues())},
+		{"likelihood", "利用可能性 (High/Medium/Low)", stringifySlice(cweskills.AllLikelihoodOfExploitValues())},
+		{"relationship", "关系类型 (ChildOf/ParentOf/CanPrecede等)", stringifySlice(cweskills.AllRelationshipNatureValues())},
+		{"scope", "后果范围 (Confidentiality/Integrity/Availability)", stringifySlice(cweskills.AllConsequenceScopeValues())},
+		{"impact", "后果影响 (High/Medium/Low)", stringifySlice(cweskills.AllConsequenceImpactValues())},
+		{"viewtype", "视图类型 (Graph/Slice)", stringifySlice(cweskills.AllViewTypeValues())},
 	}
 
 	for _, et := range enumTypes {

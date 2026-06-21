@@ -130,16 +130,16 @@ cwe parse CWE-79 -o json
 ## SDK Quick Start
 
 ```go
-import cwepkg "github.com/scagogogo/cwe-skills"
+import "github.com/scagogogo/cwe-skills"
 
-id, _ := cwepkg.ParseCWEID("CWE-79")
+id, _ := cweskills.ParseCWEID("CWE-79")
 
-client := cwepkg.NewAPIClient()
+client := cweskills.NewAPIClient()
 weakness, _ := client.GetWeakness(ctx, 79)
 
-registry := cwepkg.NewRegistry()
-registry.Register(&cwepkg.CWE{ID: 79, Name: "XSS", Abstraction: cwepkg.AbstractionBase})
+registry := cweskills.NewRegistry()
+registry.Register(&cweskills.CWE{ID: 79, Name: "XSS", Abstraction: cweskills.AbstractionBase})
 registry.BuildIndexes()
 
-cwepkg.IsInTop25(79) // true
+cweskills.IsInTop25(79) // true
 ```

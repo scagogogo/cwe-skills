@@ -52,7 +52,7 @@ CWE-89 is greater than CWE-79
 ### ExtractCWEIDs
 
 ```go
-ids := cwepkg.ExtractCWEIDs("Affected by CWE-79, CWE-89, and CWE-352")
+ids := cweskills.ExtractCWEIDs("Affected by CWE-79, CWE-89, and CWE-352")
 // ids = ["CWE-79", "CWE-89", "CWE-352"]
 ```
 
@@ -61,7 +61,7 @@ Returns all `CWE-NNN` patterns found in the text. Case-insensitive matching.
 ### ExtractFirstCWEID
 
 ```go
-id := cwepkg.ExtractFirstCWEID("See CWE-79 and CWE-89")
+id := cweskills.ExtractFirstCWEID("See CWE-79 and CWE-89")
 // id = "CWE-79"
 ```
 
@@ -70,13 +70,13 @@ Returns the first CWE ID found, or empty string if none.
 ### CompareCWEIDs
 
 ```go
-result, err := cwepkg.CompareCWEIDs("CWE-79", "CWE-89")
+result, err := cweskills.CompareCWEIDs("CWE-79", "CWE-89")
 // result = -1 (CWE-79 < CWE-89)
 
-result, err := cwepkg.CompareCWEIDs("CWE-79", "CWE-79")
+result, err := cweskills.CompareCWEIDs("CWE-79", "CWE-79")
 // result = 0 (equal)
 
-result, err := cwepkg.CompareCWEIDs("CWE-89", "CWE-79")
+result, err := cweskills.CompareCWEIDs("CWE-89", "CWE-79")
 // result = 1 (CWE-89 > CWE-79)
 ```
 

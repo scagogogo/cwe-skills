@@ -47,22 +47,22 @@ cwe stats --xml cwec_latest.xml
 ## SDK API
 
 ```go
-results := cwepkg.FindByKeyword(registry, "Injection")
-results := cwepkg.FindByAbstraction(registry, cwepkg.AbstractionBase)
-results := cwepkg.FindByConsequenceScope(registry, cwepkg.ScopeConfidentiality)
-results := cwepkg.FindTopLevel(registry)
-results := cwepkg.FindBaseWeaknesses(registry)
+results := cweskills.FindByKeyword(registry, "Injection")
+results := cweskills.FindByAbstraction(registry, cweskills.AbstractionBase)
+results := cweskills.FindByConsequenceScope(registry, cweskills.ScopeConfidentiality)
+results := cweskills.FindTopLevel(registry)
+results := cweskills.FindBaseWeaknesses(registry)
 
-filtered := cwepkg.Filter(all, cwepkg.FilterOption{
-    Abstraction: cwepkg.AbstractionBase,
-    Status:      cwepkg.StatusStable,
+filtered := cweskills.Filter(all, cweskills.FilterOption{
+    Abstraction: cweskills.AbstractionBase,
+    Status:      cweskills.StatusStable,
     Keyword:     "Injection",
 })
 
-cwepkg.SortByID(results)
-cwepkg.SortByName(results)
-cwepkg.GroupByAbstraction(results)
-cwepkg.Deduplicate(results)
+cweskills.SortByID(results)
+cweskills.SortByName(results)
+cweskills.GroupByAbstraction(results)
+cweskills.Deduplicate(results)
 ```
 
 ## Installation & Building from Source

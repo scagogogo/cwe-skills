@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,7 @@ var versionCmd = &cobra.Command{
 			BuildDate string `json:"build_date,omitempty"`
 		}{
 			CLI:       cliVersion,
-			SDK:       cwepkg.Version,
+			SDK:       cweskills.Version,
 			Go:        runtime.Version(),
 			GitCommit: cliGitCommit,
 			BuildDate: cliBuildDate,

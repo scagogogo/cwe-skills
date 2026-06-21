@@ -73,15 +73,15 @@ cwe show view 1000
 
 ```go
 // Default client
-client := cwepkg.NewAPIClient()
+client := cweskills.NewAPIClient()
 defer client.Close()
 
 // With options
-client := cwepkg.NewAPIClient(
-    cwepkg.WithAPIBaseURL("https://cwe-api.mitre.org/api"),
-    cwepkg.WithAPITimeout(30 * time.Second),
-    cwepkg.WithAPIRateLimit(10, time.Second),
-    cwepkg.WithAPIRetry(3),
+client := cweskills.NewAPIClient(
+    cweskills.WithAPIBaseURL("https://cwe-api.mitre.org/api"),
+    cweskills.WithAPITimeout(30 * time.Second),
+    cweskills.WithAPIRateLimit(10, time.Second),
+    cweskills.WithAPIRetry(3),
 )
 ```
 

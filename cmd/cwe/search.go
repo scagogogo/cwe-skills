@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -46,54 +46,54 @@ var searchCmd = &cobra.Command{
 			return fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 		}
 
-		parser := cwepkg.NewXMLParser()
+		parser := cweskills.NewXMLParser()
 		registry, err := parser.ParseFile(xmlFilePath)
 		if err != nil {
 			return fmt.Errorf("解析XML文件失败: %w", err)
 		}
 
-		var results []*cwepkg.CWE
+		var results []*cweskills.CWE
 
 		if searchKeyword != "" {
-			results = cwepkg.FindByKeyword(registry, searchKeyword)
+			results = cweskills.FindByKeyword(registry, searchKeyword)
 		} else if searchAbstr != "" {
-			abstr, err := cwepkg.ParseAbstraction(searchAbstr)
+			abstr, err := cweskills.ParseAbstraction(searchAbstr)
 			if err != nil {
 				return fmt.Errorf("无效的抽象层级: %w", err)
 			}
-			results = cwepkg.FindByAbstraction(registry, abstr)
+			results = cweskills.FindByAbstraction(registry, abstr)
 		} else if searchStatus != "" {
-			st, err := cwepkg.ParseStatus(searchStatus)
+			st, err := cweskills.ParseStatus(searchStatus)
 			if err != nil {
 				return fmt.Errorf("无效的状态: %w", err)
 			}
-			results = cwepkg.FindByStatus(registry, st)
+			results = cweskills.FindByStatus(registry, st)
 		} else if searchLikelihood != "" {
-			lh, err := cwepkg.ParseLikelihoodOfExploit(searchLikelihood)
+			lh, err := cweskills.ParseLikelihoodOfExploit(searchLikelihood)
 			if err != nil {
 				return fmt.Errorf("无效的利用可能性: %w", err)
 			}
-			results = cwepkg.FindByLikelihood(registry, lh)
+			results = cweskills.FindByLikelihood(registry, lh)
 		} else if searchStructure != "" {
-			st, err := cwepkg.ParseStructure(searchStructure)
+			st, err := cweskills.ParseStructure(searchStructure)
 			if err != nil {
 				return fmt.Errorf("无效的结构类型: %w", err)
 			}
-			results = cwepkg.FindByStructure(registry, st)
+			results = cweskills.FindByStructure(registry, st)
 		} else if searchScope != "" {
-			sc, err := cwepkg.ParseConsequenceScope(searchScope)
+			sc, err := cweskills.ParseConsequenceScope(searchScope)
 			if err != nil {
 				return fmt.Errorf("无效的后果范围: %w", err)
 			}
-			results = cwepkg.FindByConsequenceScope(registry, sc)
+			results = cweskills.FindByConsequenceScope(registry, sc)
 		} else if searchTopLevel {
-			results = cwepkg.FindTopLevel(registry)
+			results = cweskills.FindTopLevel(registry)
 		} else if searchBaseOnly {
-			results = cwepkg.FindBaseWeaknesses(registry)
+			results = cweskills.FindBaseWeaknesses(registry)
 		} else if searchChains {
-			results = cwepkg.FindChains(registry)
+			results = cweskills.FindChains(registry)
 		} else if searchComposites {
-			results = cwepkg.FindComposites(registry)
+			results = cweskills.FindComposites(registry)
 		} else {
 			results = registry.GetAll()
 		}
@@ -101,18 +101,18 @@ var searchCmd = &cobra.Command{
 		if searchSort != "" {
 			switch searchSort {
 			case "id":
-				cwepkg.SortByID(results)
+				cweskills.SortByID(results)
 			case "name":
-				cwepkg.SortByName(results)
+				cweskills.SortByName(results)
 			case "abstraction":
-				cwepkg.SortByAbstraction(results)
+				cweskills.SortByAbstraction(results)
 			default:
 				return fmt.Errorf("不支持的排序字段: %s (支持: id, name, abstraction)", searchSort)
 			}
 		}
 
 		if searchDedup {
-			results = cwepkg.Deduplicate(results)
+			results = cweskills.Deduplicate(results)
 		}
 
 		if searchGroupBy != "" {
@@ -126,7 +126,7 @@ var searchCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "找到 %d 个CWE条目:\n\n", len(results))
 		for _, cwe := range results {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s [%s, %s]\n",
-				cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name, cwe.Abstraction, cwe.Status)
+				cweskills.FormatCWEIDFromInt(cwe.ID), cwe.Name, cwe.Abstraction, cwe.Status)
 		}
 		return nil
 	},
@@ -146,64 +146,64 @@ var filterCmd = &cobra.Command{
 			return fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 		}
 
-		parser := cwepkg.NewXMLParser()
+		parser := cweskills.NewXMLParser()
 		registry, err := parser.ParseFile(xmlFilePath)
 		if err != nil {
 			return fmt.Errorf("解析XML文件失败: %w", err)
 		}
 
 		all := registry.GetAll()
-		opts := cwepkg.FilterOption{}
+		opts := cweskills.FilterOption{}
 
 		if v, _ := cmd.Flags().GetString("keyword"); v != "" {
 			opts.Keyword = v
 		}
 		if v, _ := cmd.Flags().GetString("abstraction"); v != "" {
-			abstr, err := cwepkg.ParseAbstraction(v)
+			abstr, err := cweskills.ParseAbstraction(v)
 			if err != nil {
 				return fmt.Errorf("无效的抽象层级: %w", err)
 			}
 			opts.Abstraction = abstr
 		}
 		if v, _ := cmd.Flags().GetString("status"); v != "" {
-			st, err := cwepkg.ParseStatus(v)
+			st, err := cweskills.ParseStatus(v)
 			if err != nil {
 				return fmt.Errorf("无效的状态: %w", err)
 			}
 			opts.Status = st
 		}
 		if v, _ := cmd.Flags().GetString("likelihood"); v != "" {
-			lh, err := cwepkg.ParseLikelihoodOfExploit(v)
+			lh, err := cweskills.ParseLikelihoodOfExploit(v)
 			if err != nil {
 				return fmt.Errorf("无效的利用可能性: %w", err)
 			}
 			opts.Likelihood = lh
 		}
 		if v, _ := cmd.Flags().GetString("scope"); v != "" {
-			sc, err := cwepkg.ParseConsequenceScope(v)
+			sc, err := cweskills.ParseConsequenceScope(v)
 			if err != nil {
 				return fmt.Errorf("无效的后果范围: %w", err)
 			}
 			opts.Scope = sc
 		}
 		if v, _ := cmd.Flags().GetString("structure"); v != "" {
-			st, err := cwepkg.ParseStructure(v)
+			st, err := cweskills.ParseStructure(v)
 			if err != nil {
 				return fmt.Errorf("无效的结构类型: %w", err)
 			}
 			opts.Structure = st
 		}
 
-		results := cwepkg.Filter(all, opts)
+		results := cweskills.Filter(all, opts)
 
 		if v, _ := cmd.Flags().GetString("sort"); v != "" {
 			switch v {
 			case "id":
-				cwepkg.SortByID(results)
+				cweskills.SortByID(results)
 			case "name":
-				cwepkg.SortByName(results)
+				cweskills.SortByName(results)
 			case "abstraction":
-				cwepkg.SortByAbstraction(results)
+				cweskills.SortByAbstraction(results)
 			}
 		}
 
@@ -218,7 +218,7 @@ var filterCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "过滤结果 (%d 项):\n\n", len(results))
 		for _, cwe := range results {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s [%s, %s]\n",
-				cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name, cwe.Abstraction, cwe.Status)
+				cweskills.FormatCWEIDFromInt(cwe.ID), cwe.Name, cwe.Abstraction, cwe.Status)
 		}
 		return nil
 	},
@@ -237,13 +237,13 @@ var statsCmd = &cobra.Command{
 			return fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 		}
 
-		parser := cwepkg.NewXMLParser()
+		parser := cweskills.NewXMLParser()
 		registry, err := parser.ParseFile(xmlFilePath)
 		if err != nil {
 			return fmt.Errorf("解析XML文件失败: %w", err)
 		}
 
-		stats := cwepkg.ComputeStatistics(registry)
+		stats := cweskills.ComputeStatistics(registry)
 
 		if outputFormat == "json" {
 			return printJSON(cmd, stats)
@@ -272,21 +272,21 @@ var statsCmd = &cobra.Command{
 	},
 }
 
-func printGroupedResults(cmd *cobra.Command, results []*cwepkg.CWE) error {
+func printGroupedResults(cmd *cobra.Command, results []*cweskills.CWE) error {
 	if outputFormat == "json" {
 		// Convert typed group maps to string-keyed maps for JSON
 		groupStr := make(map[string]interface{})
 		switch searchGroupBy {
 		case "abstraction":
-			for k, v := range cwepkg.GroupByAbstraction(results) {
+			for k, v := range cweskills.GroupByAbstraction(results) {
 				groupStr[string(k)] = v
 			}
 		case "status":
-			for k, v := range cwepkg.GroupByStatus(results) {
+			for k, v := range cweskills.GroupByStatus(results) {
 				groupStr[string(k)] = v
 			}
 		case "likelihood":
-			for k, v := range cwepkg.GroupByLikelihood(results) {
+			for k, v := range cweskills.GroupByLikelihood(results) {
 				groupStr[string(k)] = v
 			}
 		default:
@@ -297,24 +297,24 @@ func printGroupedResults(cmd *cobra.Command, results []*cwepkg.CWE) error {
 
 	switch searchGroupBy {
 	case "abstraction":
-		for group, items := range cwepkg.GroupByAbstraction(results) {
+		for group, items := range cweskills.GroupByAbstraction(results) {
 			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
 			for _, cwe := range items {
-				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cweskills.FormatCWEIDFromInt(cwe.ID), cwe.Name)
 			}
 		}
 	case "status":
-		for group, items := range cwepkg.GroupByStatus(results) {
+		for group, items := range cweskills.GroupByStatus(results) {
 			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
 			for _, cwe := range items {
-				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cweskills.FormatCWEIDFromInt(cwe.ID), cwe.Name)
 			}
 		}
 	case "likelihood":
-		for group, items := range cwepkg.GroupByLikelihood(results) {
+		for group, items := range cweskills.GroupByLikelihood(results) {
 			fmt.Fprintf(cmd.OutOrStdout(), "\n%s (%d 项):\n", group, len(items))
 			for _, cwe := range items {
-				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(cwe.ID), cwe.Name)
+				fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cweskills.FormatCWEIDFromInt(cwe.ID), cwe.Name)
 			}
 		}
 	default:

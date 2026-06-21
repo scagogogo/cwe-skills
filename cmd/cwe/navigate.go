@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -32,22 +32,22 @@ var navCmd = &cobra.Command{
   cwe nav is-ancestor CWE-1 CWE-79 --xml cwec_latest.xml`,
 }
 
-func loadNavRegistry() (*cwepkg.Registry, *cwepkg.Navigator, error) {
+func loadNavRegistry() (*cweskills.Registry, *cweskills.Navigator, error) {
 	if navXMLPath == "" {
 		return nil, nil, fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 	}
-	parser := cwepkg.NewXMLParser()
+	parser := cweskills.NewXMLParser()
 	registry, err := parser.ParseFile(navXMLPath)
 	if err != nil {
 		return nil, nil, fmt.Errorf("解析XML文件失败: %w", err)
 	}
 	registry.BuildIndexes()
-	nav := cwepkg.NewNavigator(registry)
+	nav := cweskills.NewNavigator(registry)
 	return registry, nav, nil
 }
 
 func parseIDArg(arg string) (int, error) {
-	return cwepkg.ParseCWEID(arg)
+	return cweskills.ParseCWEID(arg)
 }
 
 // navParentsCmd
@@ -205,14 +205,14 @@ var navShortestPathCmd = &cobra.Command{
 		path := nav.ShortestPath(from, to)
 		if path == nil {
 			fmt.Fprintf(cmd.OutOrStdout(), "%s 和 %s 之间没有路径\n",
-				cwepkg.FormatCWEIDFromInt(from), cwepkg.FormatCWEIDFromInt(to))
+				cweskills.FormatCWEIDFromInt(from), cweskills.FormatCWEIDFromInt(to))
 			return nil
 		}
 
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
-				"from": cwepkg.FormatCWEIDFromInt(from),
-				"to":   cwepkg.FormatCWEIDFromInt(to),
+				"from": cweskills.FormatCWEIDFromInt(from),
+				"to":   cweskills.FormatCWEIDFromInt(to),
 				"path": path,
 				"depth": len(path) - 1,
 			})
@@ -220,7 +220,7 @@ var navShortestPathCmd = &cobra.Command{
 
 		fmt.Fprintf(cmd.OutOrStdout(), "最短路径 (%d 步):\n", len(path)-1)
 		for i, id := range path {
-			fmt.Fprintf(cmd.OutOrStdout(), "  %d. %s\n", i+1, cwepkg.FormatCWEIDFromInt(id))
+			fmt.Fprintf(cmd.OutOrStdout(), "  %d. %s\n", i+1, cweskills.FormatCWEIDFromInt(id))
 		}
 		return nil
 	},
@@ -238,14 +238,14 @@ var navIsAncestorCmd = &cobra.Command{
 		result := nav.IsAncestorOf(ancestor, descendant)
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
-				"ancestor":   cwepkg.FormatCWEIDFromInt(ancestor),
-				"descendant": cwepkg.FormatCWEIDFromInt(descendant),
+				"ancestor":   cweskills.FormatCWEIDFromInt(ancestor),
+				"descendant": cweskills.FormatCWEIDFromInt(descendant),
 				"is_ancestor": result,
 			})
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "%s %s %s 的祖先\n",
-			cwepkg.FormatCWEIDFromInt(ancestor), boolStr(result, "是", "不是"), cwepkg.FormatCWEIDFromInt(descendant))
+			cweskills.FormatCWEIDFromInt(ancestor), boolStr(result, "是", "不是"), cweskills.FormatCWEIDFromInt(descendant))
 		return nil
 	},
 }
@@ -262,14 +262,14 @@ var navIsRelatedCmd = &cobra.Command{
 		result := nav.IsRelated(a, b)
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
-				"cwe_id_a":   cwepkg.FormatCWEIDFromInt(a),
-				"cwe_id_b":   cwepkg.FormatCWEIDFromInt(b),
+				"cwe_id_a":   cweskills.FormatCWEIDFromInt(a),
+				"cwe_id_b":   cweskills.FormatCWEIDFromInt(b),
 				"is_related": result,
 			})
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "%s 和 %s %s\n",
-			cwepkg.FormatCWEIDFromInt(a), cwepkg.FormatCWEIDFromInt(b), boolStr(result, "有关联", "无关联"))
+			cweskills.FormatCWEIDFromInt(a), cweskills.FormatCWEIDFromInt(b), boolStr(result, "有关联", "无关联"))
 		return nil
 	},
 }
@@ -286,24 +286,24 @@ var navDepthCmd = &cobra.Command{
 		depth := nav.RelationshipDepth(from, to)
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
-				"from":  cwepkg.FormatCWEIDFromInt(from),
-				"to":    cwepkg.FormatCWEIDFromInt(to),
+				"from":  cweskills.FormatCWEIDFromInt(from),
+				"to":    cweskills.FormatCWEIDFromInt(to),
 				"depth": depth,
 			})
 		}
 
 		if depth < 0 {
 			fmt.Fprintf(cmd.OutOrStdout(), "%s 和 %s 之间没有关系\n",
-				cwepkg.FormatCWEIDFromInt(from), cwepkg.FormatCWEIDFromInt(to))
+				cweskills.FormatCWEIDFromInt(from), cweskills.FormatCWEIDFromInt(to))
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "%s 到 %s 的关系深度: %d\n",
-				cwepkg.FormatCWEIDFromInt(from), cwepkg.FormatCWEIDFromInt(to), depth)
+				cweskills.FormatCWEIDFromInt(from), cweskills.FormatCWEIDFromInt(to), depth)
 		}
 		return nil
 	},
 }
 
-func printNavResults(cmd *cobra.Command, relType string, id int, cwes []*cwepkg.CWE, r *cwepkg.Registry) error {
+func printNavResults(cmd *cobra.Command, relType string, id int, cwes []*cweskills.CWE, r *cweskills.Registry) error {
 	if outputFormat == "json" {
 		type entry struct {
 			ID   int    `json:"id"`
@@ -314,16 +314,16 @@ func printNavResults(cmd *cobra.Command, relType string, id int, cwes []*cwepkg.
 			entries = append(entries, entry{ID: c.ID, Name: c.Name})
 		}
 		return printJSON(cmd, map[string]interface{}{
-			"cwe_id":  cwepkg.FormatCWEIDFromInt(id),
+			"cwe_id":  cweskills.FormatCWEIDFromInt(id),
 			"type":    relType,
 			"results": entries,
 			"count":   len(entries),
 		})
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cwepkg.FormatCWEIDFromInt(id), relType, len(cwes))
+	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cweskills.FormatCWEIDFromInt(id), relType, len(cwes))
 	for _, c := range cwes {
-		fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(c.ID), c.Name)
+		fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cweskills.FormatCWEIDFromInt(c.ID), c.Name)
 	}
 	return nil
 }

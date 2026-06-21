@@ -16,25 +16,25 @@ Import and export CWE data in JSON, XML, and CSV formats. Supports both individu
 ### Individual CWE
 
 ```go
-cwe := &cwepkg.CWE{ID: 79, Name: "XSS", Abstraction: cwepkg.AbstractionBase}
+cwe := &cweskills.CWE{ID: 79, Name: "XSS", Abstraction: cweskills.AbstractionBase}
 
 // Marshal
-data, err := cwepkg.MarshalJSON(cwe)
+data, err := cweskills.MarshalJSON(cwe)
 
 // Unmarshal
-parsed, err := cwepkg.UnmarshalJSON(data)
+parsed, err := cweskills.UnmarshalJSON(data)
 ```
 
 ### CWE List
 
 ```go
-cwes := []*cwepkg.CWE{cwe1, cwe2}
+cwes := []*cweskills.CWE{cwe1, cwe2}
 
 // Marshal list
-data, err := cwepkg.MarshalJSONList(cwes)
+data, err := cweskills.MarshalJSONList(cwes)
 
 // Unmarshal list
-parsed, err := cwepkg.UnmarshalJSONList(data)
+parsed, err := cweskills.UnmarshalJSONList(data)
 ```
 
 ### Registry JSON Round-Trip
@@ -44,7 +44,7 @@ parsed, err := cwepkg.UnmarshalJSONList(data)
 data, err := registry.ExportJSON()
 
 // Import JSON into a new registry
-newRegistry := cwepkg.NewRegistry()
+newRegistry := cweskills.NewRegistry()
 err = newRegistry.ImportJSON(data)
 ```
 
@@ -56,10 +56,10 @@ Export JSON preserves all entry types: weaknesses, categories, views, and compou
 
 ```go
 // Marshal to XML
-data, err := cwepkg.MarshalXML(cwe)
+data, err := cweskills.MarshalXML(cwe)
 
 // Unmarshal from XML
-parsed, err := cwepkg.UnmarshalXML(data)
+parsed, err := cweskills.UnmarshalXML(data)
 ```
 
 The XML format includes the standard `<?xml version="1.0" encoding="UTF-8"?>` header.
@@ -67,7 +67,7 @@ The XML format includes the standard `<?xml version="1.0" encoding="UTF-8"?>` he
 ### MITRE XML Catalog
 
 ```go
-parser := cwepkg.NewXMLParser()
+parser := cweskills.NewXMLParser()
 registry, err := parser.ParseFile("cwec_v4.15.xml")
 // Or from a reader:
 registry, err := parser.Parse(reader)
@@ -82,14 +82,14 @@ The XML parser handles the official MITRE CWE catalog format, converting all ent
 ### CWE List
 
 ```go
-cwes := []*cwepkg.CWE{cwe1, cwe2, cwe3}
+cwes := []*cweskills.CWE{cwe1, cwe2, cwe3}
 
 // Marshal to CSV
-data, err := cwepkg.MarshalCSV(cwes)
+data, err := cweskills.MarshalCSV(cwes)
 // Returns: "ID,Name,Abstraction,Status,Structure,Description,CWEType\n79,XSS,Base,...\n"
 
 // Unmarshal from CSV
-parsed, err := cwepkg.UnmarshalCSV(data)
+parsed, err := cweskills.UnmarshalCSV(data)
 ```
 
 ### Registry CSV Export
@@ -113,17 +113,17 @@ ID,Name,Abstraction,Status,Structure,Description,CWEType
 ## Consequence Struct
 
 ```go
-consequence := cwepkg.Consequence{
-    Scopes:  []cwepkg.ConsequenceScope{cwepkg.ScopeConfidentiality, cwepkg.ScopeIntegrity},
-    Impacts: []cwepkg.ConsequenceImpact{cwepkg.ImpactHigh},
+consequence := cweskills.Consequence{
+    Scopes:  []cweskills.ConsequenceScope{cweskills.ScopeConfidentiality, cweskills.ScopeIntegrity},
+    Impacts: []cweskills.ConsequenceImpact{cweskills.ImpactHigh},
     Note:    "Details about the impact",
 }
 
 // Check if a scope is present
-hasConf := consequence.HasScope(cwepkg.ScopeConfidentiality) // true
+hasConf := consequence.HasScope(cweskills.ScopeConfidentiality) // true
 
 // Check if an impact is present
-hasHigh := consequence.HasImpact(cwepkg.ImpactHigh) // true
+hasHigh := consequence.HasImpact(cweskills.ImpactHigh) // true
 
 // Get maximum impact level
 maxImpact := consequence.MaxImpact() // ImpactHigh

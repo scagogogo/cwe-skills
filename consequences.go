@@ -1,4 +1,4 @@
-package cwe
+package cweskills
 
 // Consequence 表示CWE条目可能造成的后果。
 //

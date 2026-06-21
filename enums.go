@@ -1,4 +1,4 @@
-package cwe
+package cweskills
 
 // Abstraction 表示CWE条目的抽象层级。
 //

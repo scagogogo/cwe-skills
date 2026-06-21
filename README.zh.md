@@ -59,10 +59,10 @@ git clone https://github.com/scagogogo/cwe-skills.git && cd cwe-skills && go bui
 
 ### Go SDK
 ```go
-import cwepkg "github.com/scagogogo/cwe-skills"
-id, _ := cwepkg.ParseCWEID("CWE-79")
-cwepkg.IsInTop25(79) // true
-client := cwepkg.NewAPIClient()
+import "github.com/scagogogo/cwe-skills"
+id, _ := cweskills.ParseCWEID("CWE-79")
+cweskills.IsInTop25(79) // true
+client := cweskills.NewAPIClient()
 weakness, _ := client.GetWeakness(ctx, 79)
 ```
 
@@ -77,43 +77,43 @@ weakness, _ := client.GetWeakness(ctx, 79)
 ```go
 import (
     "context"
-    cwepkg "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 // 解析和验证CWE ID
-id, _ := cwepkg.ParseCWEID("CWE-79")
-if cwepkg.IsCWEID("CWE-89") { /* 有效 */ }
+id, _ := cweskills.ParseCWEID("CWE-79")
+if cweskills.IsCWEID("CWE-89") { /* 有效 */ }
 
 // 查询MITRE REST API
-client := cwepkg.NewAPIClient()
+client := cweskills.NewAPIClient()
 defer client.Close()
 weakness, _ := client.GetWeakness(context.Background(), 79)
 parents, _ := client.GetParents(context.Background(), 79)
 
 // 从XML加载本地注册表
-registry, _ := cwepkg.NewXMLParser().ParseFile("cwec_v4.15.xml")
+registry, _ := cweskills.NewXMLParser().ParseFile("cwec_v4.15.xml")
 registry.BuildIndexes()
 
 // 导航关系
-nav := cwepkg.NewNavigator(registry)
+nav := cweskills.NewNavigator(registry)
 ancestors := nav.Ancestors(79)
 path := nav.ShortestPath(79, 1)
 
 // 构建层次树
-tree := cwepkg.BuildTree(registry, 1)
+tree := cweskills.BuildTree(registry, 1)
 leaves := tree.LeafNodes()
 
 // 搜索和过滤
-results := cwepkg.FindByKeyword(registry, "Injection")
-filtered := cwepkg.Filter(results, cwepkg.FilterOption{
-    Abstraction: cwepkg.AbstractionBase,
-    Status:      cwepkg.StatusStable,
+results := cweskills.FindByKeyword(registry, "Injection")
+filtered := cweskills.Filter(results, cweskills.FilterOption{
+    Abstraction: cweskills.AbstractionBase,
+    Status:      cweskills.StatusStable,
 })
 
 // 知名列表
-cwepkg.IsInTop25(79)       // true
-cwepkg.IsInOWASPTop10(79)  // true
-cwepkg.IsInSANSTop25(79)   // true
+cweskills.IsInTop25(79)       // true
+cweskills.IsInOWASPTop10(79)  // true
+cweskills.IsInSANSTop25(79)   // true
 
 // 序列化
 jsonData, _ := registry.ExportJSON()

@@ -81,36 +81,36 @@ JSON output:
 ### Membership Checks
 
 ```go
-cwepkg.IsInTop25(79)       // true
-cwepkg.IsInOWASPTop10(79)  // true
-cwepkg.IsInSANSTop25(79)   // true
+cweskills.IsInTop25(79)       // true
+cweskills.IsInOWASPTop10(79)  // true
+cweskills.IsInSANSTop25(79)   // true
 ```
 
 ### OWASP Category
 
 ```go
-category := cwepkg.GetOWASPCategory(79)
+category := cweskills.GetOWASPCategory(79)
 // "A03:2021-Injection"
 
-categories := cwepkg.GetOWASPCategories(79)
+categories := cweskills.GetOWASPCategories(79)
 // ["A03:2021-Injection"]
 ```
 
 ### View Membership
 
 ```go
-cwepkg.IsInWellKnownView(1000)  // true — View 1000 is a well-known research view
+cweskills.IsInWellKnownView(1000)  // true — View 1000 is a well-known research view
 ```
 
 ### Pre-Defined Lists
 
 ```go
 // Direct access to the ID slices
-top25 := cwepkg.CWETop25       // []int{79, 89, 352, 862, ...}
-sans25 := cwepkg.SANSTop25      // []int{119, 20, 79, ...}
+top25 := cweskills.CWETop25       // []int{79, 89, 352, 862, ...}
+sans25 := cweskills.SANSTop25      // []int{119, 20, 79, ...}
 
 // OWASP Top 10 mapping
-owasp := cwepkg.OWASPTop10      // map[string][]int
+owasp := cweskills.OWASPTop10      // map[string][]int
 // Key example: "A03:2021-Injection" -> []int{79, 89, ...}
 ```
 

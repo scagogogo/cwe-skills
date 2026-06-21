@@ -21,6 +21,7 @@ vendor/
 # Build output
 /build/
 /dist/
+/cwe
 
 # IDE
 .idea/
