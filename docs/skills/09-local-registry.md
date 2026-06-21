@@ -35,7 +35,7 @@ cwe registry export --xml <file> --format csv          # Export as CSV
 ## SDK API
 
 ```go
-registry, _ := cwepkg.NewXMLParser().ParseFile("cwec_latest.xml")
+registry, _ := cweskills.NewXMLParser().ParseFile("cwec_latest.xml")
 registry.BuildIndexes()
 
 cwe, ok := registry.Get(79)

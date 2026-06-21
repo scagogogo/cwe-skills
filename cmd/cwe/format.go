@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -33,11 +33,11 @@ var formatCmd = &cobra.Command{
 		results := make([]formatResult, 0, len(args))
 		for _, input := range args {
 			result := formatResult{Input: input}
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				result.Error = err.Error()
 			} else {
-				result.Output = cwepkg.FormatCWEIDFromInt(id)
+				result.Output = cweskills.FormatCWEIDFromInt(id)
 			}
 			results = append(results, result)
 		}
@@ -77,7 +77,7 @@ var extractCmd = &cobra.Command{
 		}
 
 		text := strings.Join(args, " ")
-		ids := cwepkg.ExtractCWEIDs(text)
+		ids := cweskills.ExtractCWEIDs(text)
 
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
@@ -112,7 +112,7 @@ var compareCmd = &cobra.Command{
   cwe compare CWE-79 CWE-79    # CWE-79 == CWE-79`,
 	Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		result, err := cwepkg.CompareCWEIDs(args[0], args[1])
+		result, err := cweskills.CompareCWEIDs(args[0], args[1])
 		if err != nil {
 			return fmt.Errorf("比较失败: %w", err)
 		}
@@ -169,15 +169,15 @@ var compareIntCmd = &cobra.Command{
 
 		if outputFormat == "json" {
 			return printJSON(cmd, map[string]interface{}{
-				"id1":        cwepkg.FormatCWEIDFromInt(id1),
-				"id2":        cwepkg.FormatCWEIDFromInt(id2),
+				"id1":        cweskills.FormatCWEIDFromInt(id1),
+				"id2":        cweskills.FormatCWEIDFromInt(id2),
 				"comparison": comparison,
 				"result":     result,
 			})
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "%s is %s %s\n",
-			cwepkg.FormatCWEIDFromInt(id1), comparison, cwepkg.FormatCWEIDFromInt(id2))
+			cweskills.FormatCWEIDFromInt(id1), comparison, cweskills.FormatCWEIDFromInt(id2))
 		return nil
 	},
 }

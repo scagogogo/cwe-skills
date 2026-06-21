@@ -1,4 +1,4 @@
-// Package cwe 提供了对CWE（Common Weakness Enumeration，通用缺陷枚举）的完整支持，
+// Package cweskills 提供了对CWE（Common Weakness Enumeration，通用缺陷枚举）的完整支持，
 // 包括CWE条目的解析、验证、搜索、过滤、关系导航、树构建、序列化等功能。
 //
 // 本包旨在作为网络安全产品的底层SDK，支持SAST/DAST工具、漏洞管理平台、
@@ -35,7 +35,7 @@
 //	if cwe.IsInTop25(79) {
 //	    fmt.Println("CWE-79 is in CWE Top 25")
 //	}
-package cwe
+package cweskills
 
 // Version 表示本SDK的版本号
 const Version = "v0.0.1"

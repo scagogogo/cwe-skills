@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -37,15 +37,15 @@ var parentsCmd = &cobra.Command{
 	Short: "查询CWE的父级弱点",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return fmt.Errorf("无效CWE ID: %w", err)
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(relBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(relBaseURL))
 		defer client.Close()
 
-		var rels []cwepkg.Relationship
+		var rels []cweskills.Relationship
 		if relViewID > 0 {
 			rels, err = client.GetParents(context.Background(), id, relViewID)
 		} else {
@@ -65,15 +65,15 @@ var childrenCmd = &cobra.Command{
 	Short: "查询CWE的子级弱点",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return fmt.Errorf("无效CWE ID: %w", err)
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(relBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(relBaseURL))
 		defer client.Close()
 
-		var rels []cwepkg.Relationship
+		var rels []cweskills.Relationship
 		if relViewID > 0 {
 			rels, err = client.GetChildren(context.Background(), id, relViewID)
 		} else {
@@ -93,12 +93,12 @@ var ancestorsCmd = &cobra.Command{
 	Short: "查询CWE的祖先弱点",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return fmt.Errorf("无效CWE ID: %w", err)
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(relBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(relBaseURL))
 		defer client.Close()
 
 		rels, err := client.GetAncestors(context.Background(), id)
@@ -116,12 +116,12 @@ var descendantsCmd = &cobra.Command{
 	Short: "查询CWE的后代弱点",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return fmt.Errorf("无效CWE ID: %w", err)
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(relBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(relBaseURL))
 		defer client.Close()
 
 		rels, err := client.GetDescendants(context.Background(), id)
@@ -133,19 +133,19 @@ var descendantsCmd = &cobra.Command{
 	},
 }
 
-func printRelationships(cmd *cobra.Command, relType string, id int, rels []cwepkg.Relationship) error {
+func printRelationships(cmd *cobra.Command, relType string, id int, rels []cweskills.Relationship) error {
 	if outputFormat == "json" {
 		return printJSON(cmd, map[string]interface{}{
-			"cwe_id":        cwepkg.FormatCWEIDFromInt(id),
+			"cwe_id":        cweskills.FormatCWEIDFromInt(id),
 			"relation_type": relType,
 			"relationships": rels,
 			"count":         len(rels),
 		})
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cwepkg.FormatCWEIDFromInt(id), relType, len(rels))
+	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cweskills.FormatCWEIDFromInt(id), relType, len(rels))
 	for _, rel := range rels {
-		fmt.Fprintf(cmd.OutOrStdout(), "  %s -> %s", rel.Nature, cwepkg.FormatCWEIDFromInt(rel.CWEID))
+		fmt.Fprintf(cmd.OutOrStdout(), "  %s -> %s", rel.Nature, cweskills.FormatCWEIDFromInt(rel.CWEID))
 		if rel.ViewID > 0 {
 			fmt.Fprintf(cmd.OutOrStdout(), " (View: %d)", rel.ViewID)
 		}

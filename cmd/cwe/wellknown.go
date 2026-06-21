@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +30,7 @@ var top25Cmd = &cobra.Command{
 	Short: "列出CWE Top 25 Most Dangerous Software Weaknesses",
 	Long:  "列出MITRE CWE Top 25 Most Dangerous Software Weaknesses.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ids := cwepkg.CWETop25
+		ids := cweskills.CWETop25
 		return printIDList(cmd, "CWE Top 25 Most Dangerous Software Weaknesses", ids)
 	},
 }
@@ -50,7 +50,7 @@ var owaspCmd = &cobra.Command{
 			for _, cat := range sortedOWASPKeys() {
 				entries = append(entries, owaspEntry{
 					Category: cat,
-					CWEIDs:   cwepkg.OWASPTop10[cat],
+					CWEIDs:   cweskills.OWASPTop10[cat],
 				})
 			}
 			return printJSON(cmd, entries)
@@ -58,10 +58,10 @@ var owaspCmd = &cobra.Command{
 
 		fmt.Fprintf(cmd.OutOrStdout(), "OWASP Top 10 (2021):\n\n")
 		for _, cat := range sortedOWASPKeys() {
-			ids := cwepkg.OWASPTop10[cat]
+			ids := cweskills.OWASPTop10[cat]
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s:\n", cat)
 			for _, id := range ids {
-				fmt.Fprintf(cmd.OutOrStdout(), "    %s\n", cwepkg.FormatCWEIDFromInt(id))
+				fmt.Fprintf(cmd.OutOrStdout(), "    %s\n", cweskills.FormatCWEIDFromInt(id))
 			}
 		}
 		return nil
@@ -74,7 +74,7 @@ var sansCmd = &cobra.Command{
 	Short: "列出SANS Top 25 Most Dangerous Software Errors",
 	Long:  "列出SANS Top 25 Most Dangerous Software Errors对应的CWE ID.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ids := cwepkg.SANSTop25
+		ids := cweskills.SANSTop25
 		return printIDList(cmd, "SANS Top 25 Most Dangerous Software Errors", ids)
 	},
 }
@@ -100,30 +100,30 @@ var checkListCmd = &cobra.Command{
 
 		results := make([]checkResult, 0, len(args))
 		for _, input := range args {
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				results = append(results, checkResult{CWEID: input, InList: []string{}})
 				continue
 			}
 
 			var inList []string
-			if cwepkg.IsInTop25(id) {
+			if cweskills.IsInTop25(id) {
 				inList = append(inList, "Top 25")
 			}
-			if cwepkg.IsInOWASPTop10(id) {
-				cat := cwepkg.GetOWASPCategory(id)
+			if cweskills.IsInOWASPTop10(id) {
+				cat := cweskills.GetOWASPCategory(id)
 				if cat != "" {
 					inList = append(inList, "OWASP Top 10 ("+cat+")")
 				} else {
 					inList = append(inList, "OWASP Top 10")
 				}
 			}
-			if cwepkg.IsInSANSTop25(id) {
+			if cweskills.IsInSANSTop25(id) {
 				inList = append(inList, "SANS Top 25")
 			}
 
 			results = append(results, checkResult{
-				CWEID:  cwepkg.FormatCWEIDFromInt(id),
+				CWEID:  cweskills.FormatCWEIDFromInt(id),
 				InList: inList,
 			})
 		}
@@ -151,21 +151,21 @@ func printIDList(cmd *cobra.Command, title string, ids []int) error {
 		}
 		entries := make([]idEntry, len(ids))
 		for i, id := range ids {
-			entries[i] = idEntry{ID: id, Format: cwepkg.FormatCWEIDFromInt(id)}
+			entries[i] = idEntry{ID: id, Format: cweskills.FormatCWEIDFromInt(id)}
 		}
 		return printJSON(cmd, entries)
 	}
 
 	fmt.Fprintf(cmd.OutOrStdout(), "%s (%d 项):\n\n", title, len(ids))
 	for i, id := range ids {
-		fmt.Fprintf(cmd.OutOrStdout(), "  %2d. %s\n", i+1, cwepkg.FormatCWEIDFromInt(id))
+		fmt.Fprintf(cmd.OutOrStdout(), "  %2d. %s\n", i+1, cweskills.FormatCWEIDFromInt(id))
 	}
 	return nil
 }
 
 func sortedOWASPKeys() []string {
-	keys := make([]string, 0, len(cwepkg.OWASPTop10))
-	for k := range cwepkg.OWASPTop10 {
+	keys := make([]string, 0, len(cweskills.OWASPTop10))
+	for k := range cweskills.OWASPTop10 {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -31,14 +31,14 @@ var showCmd = &cobra.Command{
 			return fmt.Errorf("请提供至少一个CWE ID")
 		}
 
-		opts := []cwepkg.APIClientOption{
-			cwepkg.WithAPIBaseURL(showBaseURL),
+		opts := []cweskills.APIClientOption{
+			cweskills.WithAPIBaseURL(showBaseURL),
 		}
 		if showTimeout > 0 {
-			opts = append(opts, cwepkg.WithAPITimeout(time.Duration(showTimeout)*time.Second))
+			opts = append(opts, cweskills.WithAPITimeout(time.Duration(showTimeout)*time.Second))
 		}
 
-		client := cwepkg.NewAPIClient(opts...)
+		client := cweskills.NewAPIClient(opts...)
 		defer client.Close()
 
 		type showResult struct {
@@ -49,7 +49,7 @@ var showCmd = &cobra.Command{
 
 		results := make([]showResult, 0, len(args))
 		for _, input := range args {
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				results = append(results, showResult{CWEID: input, Error: err.Error()})
 				continue
@@ -58,14 +58,14 @@ var showCmd = &cobra.Command{
 			cwe, err := client.GetWeakness(context.Background(), id)
 			if err != nil {
 				results = append(results, showResult{
-					CWEID: cwepkg.FormatCWEIDFromInt(id),
+					CWEID: cweskills.FormatCWEIDFromInt(id),
 					Error: err.Error(),
 				})
 				continue
 			}
 
 			results = append(results, showResult{
-				CWEID:  cwepkg.FormatCWEIDFromInt(id),
+				CWEID:  cweskills.FormatCWEIDFromInt(id),
 				Detail: cwe,
 			})
 		}
@@ -79,7 +79,7 @@ var showCmd = &cobra.Command{
 				fmt.Fprintf(cmd.OutOrStdout(), "%s: 错误 - %s\n", r.CWEID, r.Error)
 			} else {
 				fmt.Fprintf(cmd.OutOrStdout(), "=== %s ===\n", r.CWEID)
-				if cwe, ok := r.Detail.(*cwepkg.CWE); ok {
+				if cwe, ok := r.Detail.(*cweskills.CWE); ok {
 					fmt.Fprintf(cmd.OutOrStdout(), "  名称:     %s\n", cwe.Name)
 					fmt.Fprintf(cmd.OutOrStdout(), "  抽象层级: %s\n", cwe.Abstraction)
 					fmt.Fprintf(cmd.OutOrStdout(), "  状态:     %s\n", cwe.Status)
@@ -110,11 +110,11 @@ var showCategoryCmd = &cobra.Command{
 			return fmt.Errorf("请提供至少一个类别ID")
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(showBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(showBaseURL))
 		defer client.Close()
 
 		for _, input := range args {
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				fmt.Fprintf(cmd.OutOrStdout(), "%s: 无效ID - %v\n", input, err)
 				continue
@@ -122,14 +122,14 @@ var showCategoryCmd = &cobra.Command{
 
 			cat, err := client.GetCategory(context.Background(), id)
 			if err != nil {
-				fmt.Fprintf(cmd.OutOrStdout(), "%s: 错误 - %v\n", cwepkg.FormatCWEIDFromInt(id), err)
+				fmt.Fprintf(cmd.OutOrStdout(), "%s: 错误 - %v\n", cweskills.FormatCWEIDFromInt(id), err)
 				continue
 			}
 
 			if outputFormat == "json" {
 				_ = printJSON(cmd, cat)
 			} else {
-				fmt.Fprintf(cmd.OutOrStdout(), "=== %s (类别) ===\n", cwepkg.FormatCWEIDFromInt(id))
+				fmt.Fprintf(cmd.OutOrStdout(), "=== %s (类别) ===\n", cweskills.FormatCWEIDFromInt(id))
 				fmt.Fprintf(cmd.OutOrStdout(), "  名称: %s\n", cat.Name)
 				if cat.Description != "" {
 					fmt.Fprintf(cmd.OutOrStdout(), "  描述: %s\n", cat.Description)
@@ -150,11 +150,11 @@ var showViewCmd = &cobra.Command{
 			return fmt.Errorf("请提供至少一个视图ID")
 		}
 
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(showBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(showBaseURL))
 		defer client.Close()
 
 		for _, input := range args {
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				fmt.Fprintf(cmd.OutOrStdout(), "%s: 无效ID - %v\n", input, err)
 				continue
@@ -162,14 +162,14 @@ var showViewCmd = &cobra.Command{
 
 			view, err := client.GetView(context.Background(), id)
 			if err != nil {
-				fmt.Fprintf(cmd.OutOrStdout(), "%s: 错误 - %v\n", cwepkg.FormatCWEIDFromInt(id), err)
+				fmt.Fprintf(cmd.OutOrStdout(), "%s: 错误 - %v\n", cweskills.FormatCWEIDFromInt(id), err)
 				continue
 			}
 
 			if outputFormat == "json" {
 				_ = printJSON(cmd, view)
 			} else {
-				fmt.Fprintf(cmd.OutOrStdout(), "=== %s (视图) ===\n", cwepkg.FormatCWEIDFromInt(id))
+				fmt.Fprintf(cmd.OutOrStdout(), "=== %s (视图) ===\n", cweskills.FormatCWEIDFromInt(id))
 				fmt.Fprintf(cmd.OutOrStdout(), "  名称: %s\n", view.Name)
 				fmt.Fprintf(cmd.OutOrStdout(), "  类型: %s\n", view.Type)
 				if view.Description != "" {

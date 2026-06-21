@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 基于 github.com/scagogogo/cwe-skills SDK 构建的CWE通用缺陷枚举命令行工具。
 支持CWE ID的解析、验证、搜索，以及MITRE CWE REST API的查询。
 
-SDK版本: %s`, cwepkg.Version),
+SDK版本: %s`, cweskills.Version),
 	SilenceUsage:  true,
 	SilenceErrors: true,
 }

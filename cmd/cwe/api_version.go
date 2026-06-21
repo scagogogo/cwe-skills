@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ var apiVersionCmd = &cobra.Command{
 	Short: "查询MITRE CWE API版本",
 	Long:  "查询MITRE CWE REST API的版本信息。",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		client := cwepkg.NewAPIClient(cwepkg.WithAPIBaseURL(apiVersionBaseURL))
+		client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL(apiVersionBaseURL))
 		defer client.Close()
 
 		version, err := client.GetVersion(context.Background())

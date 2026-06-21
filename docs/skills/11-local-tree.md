@@ -34,15 +34,15 @@ cwe tree leaves CWE-1 --xml <file>
 ## SDK API
 
 ```go
-registry, _ := cwepkg.NewXMLParser().ParseFile("cwec_latest.xml")
+registry, _ := cweskills.NewXMLParser().ParseFile("cwec_latest.xml")
 registry.BuildIndexes()
 
-tree := cwepkg.BuildTree(registry, 1)        // *TreeNode
-forest := cwepkg.BuildForest(registry)         // []*TreeNode
-viewTree := cwepkg.BuildViewTree(registry, 1000) // *TreeNode
+tree := cweskills.BuildTree(registry, 1)        // *TreeNode
+forest := cweskills.BuildForest(registry)         // []*TreeNode
+viewTree := cweskills.BuildViewTree(registry, 1000) // *TreeNode
 
 // Traversal
-tree.Walk(func(node *cwepkg.TreeNode) bool {
+tree.Walk(func(node *cweskills.TreeNode) bool {
     fmt.Printf("%s%s\n", strings.Repeat("  ", node.Depth), node.CWE.Name)
     return true
 })

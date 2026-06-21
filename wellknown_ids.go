@@ -1,4 +1,4 @@
-package cwe
+package cweskills
 
 // 知名视图ID常量
 const (

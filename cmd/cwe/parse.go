@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -38,14 +38,14 @@ var parseCmd = &cobra.Command{
 		for _, input := range args {
 			result := parseResult{Input: input}
 
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				result.Valid = false
 				result.Error = err.Error()
 			} else {
 				result.Valid = true
 				result.ID = id
-				result.Format = cwepkg.FormatCWEIDFromInt(id)
+				result.Format = cweskills.FormatCWEIDFromInt(id)
 			}
 
 			results = append(results, result)

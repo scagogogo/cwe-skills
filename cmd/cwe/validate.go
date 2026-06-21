@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ var validateCmd = &cobra.Command{
 		allValid := true
 		for _, input := range args {
 			result := validateResult{Input: input}
-			err := cwepkg.ValidateCWEID(input)
+			err := cweskills.ValidateCWEID(input)
 			if err != nil {
 				result.Valid = false
 				result.Error = err.Error()

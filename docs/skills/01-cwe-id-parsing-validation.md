@@ -74,10 +74,10 @@ CWE-352
 ### ParseCWEID
 
 ```go
-id, err := cwepkg.ParseCWEID("CWE-79")
+id, err := cweskills.ParseCWEID("CWE-79")
 // id = 79, err = nil
 
-id, err := cwepkg.ParseCWEID("abc")
+id, err := cweskills.ParseCWEID("abc")
 // id = 0, err = InvalidCWEIDError
 ```
 
@@ -86,19 +86,19 @@ Accepts: `"CWE-79"`, `"cwe-79"`, `"79"` — case-insensitive, optional prefix.
 ### FormatCWEID / FormatCWEIDFromInt
 
 ```go
-formatted, err := cwepkg.FormatCWEID("79")     // "CWE-79"
-formatted := cwepkg.FormatCWEIDFromInt(79)       // "CWE-79"
+formatted, err := cweskills.FormatCWEID("79")     // "CWE-79"
+formatted := cweskills.FormatCWEIDFromInt(79)       // "CWE-79"
 ```
 
 ### IsCWEID / ValidateCWEID
 
 ```go
-if cwepkg.IsCWEID("CWE-89") {  // true — quick check
+if cweskills.IsCWEID("CWE-89") {  // true — quick check
     // valid
 }
 
-err := cwepkg.ValidateCWEID("abc")  // returns InvalidCWEIDError
-err := cwepkg.ValidateCWEID("CWE-79")  // nil — valid
+err := cweskills.ValidateCWEID("abc")  // returns InvalidCWEIDError
+err := cweskills.ValidateCWEID("CWE-79")  // nil — valid
 ```
 
 `IsCWEID` is a boolean quick-check. `ValidateCWEID` returns a structured error with details.
@@ -106,7 +106,7 @@ err := cwepkg.ValidateCWEID("CWE-79")  // nil — valid
 ### CompareCWEIDs
 
 ```go
-result, err := cwepkg.CompareCWEIDs("CWE-79", "CWE-89")
+result, err := cweskills.CompareCWEIDs("CWE-79", "CWE-89")
 // result < 0 means CWE-79 < CWE-89
 // result == 0 means equal
 // result > 0 means greater

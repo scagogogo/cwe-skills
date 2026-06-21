@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -26,11 +26,11 @@ var treeCmd = &cobra.Command{
   cwe tree leaves CWE-1 --xml cwec_latest.xml`,
 }
 
-func loadTreeRegistry() (*cwepkg.Registry, error) {
+func loadTreeRegistry() (*cweskills.Registry, error) {
 	if treeXMLPath == "" {
 		return nil, fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 	}
-	parser := cwepkg.NewXMLParser()
+	parser := cweskills.NewXMLParser()
 	registry, err := parser.ParseFile(treeXMLPath)
 	if err != nil {
 		return nil, fmt.Errorf("解析XML文件失败: %w", err)
@@ -50,10 +50,10 @@ var treeBuildCmd = &cobra.Command{
 			return err
 		}
 
-		rootID, _ := cwepkg.ParseCWEID(args[0])
-		tree := cwepkg.BuildTree(registry, rootID)
+		rootID, _ := cweskills.ParseCWEID(args[0])
+		tree := cweskills.BuildTree(registry, rootID)
 		if tree == nil {
-			return fmt.Errorf("无法构建以 %s 为根的树", cwepkg.FormatCWEIDFromInt(rootID))
+			return fmt.Errorf("无法构建以 %s 为根的树", cweskills.FormatCWEIDFromInt(rootID))
 		}
 
 		if outputFormat == "json" {
@@ -75,7 +75,7 @@ var treeForestCmd = &cobra.Command{
 			return err
 		}
 
-		forest := cwepkg.BuildForest(registry)
+		forest := cweskills.BuildForest(registry)
 		if outputFormat == "json" {
 			trees := make([]interface{}, 0, len(forest))
 			for _, t := range forest {
@@ -108,10 +108,10 @@ var treeViewCmd = &cobra.Command{
 			return err
 		}
 
-		viewID, _ := cwepkg.ParseCWEID(args[0])
-		tree := cwepkg.BuildViewTree(registry, viewID)
+		viewID, _ := cweskills.ParseCWEID(args[0])
+		tree := cweskills.BuildViewTree(registry, viewID)
 		if tree == nil {
-			return fmt.Errorf("无法构建视图 %s 的树", cwepkg.FormatCWEIDFromInt(viewID))
+			return fmt.Errorf("无法构建视图 %s 的树", cweskills.FormatCWEIDFromInt(viewID))
 		}
 
 		if outputFormat == "json" {
@@ -135,11 +135,11 @@ var treePathCmd = &cobra.Command{
 			return err
 		}
 
-		id, _ := cwepkg.ParseCWEID(args[0])
+		id, _ := cweskills.ParseCWEID(args[0])
 		rootID, _ := cmd.Flags().GetInt("root")
 		if rootID <= 0 {
 			// 自动查找根（pillar祖先）
-			nav := cwepkg.NewNavigator(registry)
+			nav := cweskills.NewNavigator(registry)
 			ancestors := nav.Ancestors(id)
 			if len(ancestors) > 0 {
 				rootID = ancestors[len(ancestors)-1].ID
@@ -148,19 +148,19 @@ var treePathCmd = &cobra.Command{
 			}
 		}
 
-		tree := cwepkg.BuildTree(registry, rootID)
+		tree := cweskills.BuildTree(registry, rootID)
 		if tree == nil {
 			return fmt.Errorf("无法构建树")
 		}
 
 		node := tree.Find(id)
 		if node == nil {
-			return fmt.Errorf("在树中未找到 %s", cwepkg.FormatCWEIDFromInt(id))
+			return fmt.Errorf("在树中未找到 %s", cweskills.FormatCWEIDFromInt(id))
 		}
 
 		path := node.Path()
 		if path == nil {
-			return fmt.Errorf("在树中未找到 %s", cwepkg.FormatCWEIDFromInt(id))
+			return fmt.Errorf("在树中未找到 %s", cweskills.FormatCWEIDFromInt(id))
 		}
 
 		if outputFormat == "json" {
@@ -169,18 +169,18 @@ var treePathCmd = &cobra.Command{
 				ids[i] = n.CWE.ID
 			}
 			return printJSON(cmd, map[string]interface{}{
-				"cwe_id": cwepkg.FormatCWEIDFromInt(id),
-				"root":   cwepkg.FormatCWEIDFromInt(rootID),
+				"cwe_id": cweskills.FormatCWEIDFromInt(id),
+				"root":   cweskills.FormatCWEIDFromInt(rootID),
 				"path":   ids,
 				"depth":  len(path) - 1,
 			})
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "从 %s 到 %s 的路径 (%d 步):\n",
-			cwepkg.FormatCWEIDFromInt(rootID), cwepkg.FormatCWEIDFromInt(id), len(path)-1)
+			cweskills.FormatCWEIDFromInt(rootID), cweskills.FormatCWEIDFromInt(id), len(path)-1)
 		for i, n := range path {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %d. %s - %s\n", i+1,
-				cwepkg.FormatCWEIDFromInt(n.CWE.ID), n.CWE.Name)
+				cweskills.FormatCWEIDFromInt(n.CWE.ID), n.CWE.Name)
 		}
 		return nil
 	},
@@ -197,10 +197,10 @@ var treeLeavesCmd = &cobra.Command{
 			return err
 		}
 
-		rootID, _ := cwepkg.ParseCWEID(args[0])
-		tree := cwepkg.BuildTree(registry, rootID)
+		rootID, _ := cweskills.ParseCWEID(args[0])
+		tree := cweskills.BuildTree(registry, rootID)
 		if tree == nil {
-			return fmt.Errorf("无法构建以 %s 为根的树", cwepkg.FormatCWEIDFromInt(rootID))
+			return fmt.Errorf("无法构建以 %s 为根的树", cweskills.FormatCWEIDFromInt(rootID))
 		}
 
 		leaves := tree.LeafNodes()
@@ -214,24 +214,24 @@ var treeLeavesCmd = &cobra.Command{
 				entries = append(entries, leafEntry{ID: l.CWE.ID, Name: l.CWE.Name})
 			}
 			return printJSON(cmd, map[string]interface{}{
-				"root":   cwepkg.FormatCWEIDFromInt(rootID),
+				"root":   cweskills.FormatCWEIDFromInt(rootID),
 				"leaves": entries,
 				"count":  len(entries),
 			})
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "%s 的叶子节点 (%d 项):\n",
-			cwepkg.FormatCWEIDFromInt(rootID), len(leaves))
+			cweskills.FormatCWEIDFromInt(rootID), len(leaves))
 		for _, l := range leaves {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n",
-				cwepkg.FormatCWEIDFromInt(l.CWE.ID), l.CWE.Name)
+				cweskills.FormatCWEIDFromInt(l.CWE.ID), l.CWE.Name)
 		}
 		return nil
 	},
 }
 
 // treeNodeToMap 将TreeNode转为map用于JSON输出
-func treeNodeToMap(node *cwepkg.TreeNode) map[string]interface{} {
+func treeNodeToMap(node *cweskills.TreeNode) map[string]interface{} {
 	result := map[string]interface{}{
 		"id":      node.CWE.ID,
 		"name":    node.CWE.Name,
@@ -248,10 +248,10 @@ func treeNodeToMap(node *cwepkg.TreeNode) map[string]interface{} {
 	return result
 }
 
-func printTreeNode(cmd *cobra.Command, node *cwepkg.TreeNode, indent int) {
+func printTreeNode(cmd *cobra.Command, node *cweskills.TreeNode, indent int) {
 	prefix := strings.Repeat("  ", indent)
 	fmt.Fprintf(cmd.OutOrStdout(), "%s%s - %s\n", prefix,
-		cwepkg.FormatCWEIDFromInt(node.CWE.ID), node.CWE.Name)
+		cweskills.FormatCWEIDFromInt(node.CWE.ID), node.CWE.Name)
 	for _, child := range node.Children {
 		printTreeNode(cmd, child, indent+1)
 	}

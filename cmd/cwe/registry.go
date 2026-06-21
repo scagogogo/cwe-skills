@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cwepkg "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
@@ -68,7 +68,7 @@ var registryGetCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ var registryContainsCmd = &cobra.Command{
 
 		results := make([]containsResult, 0, len(args))
 		for _, input := range args {
-			id, err := cwepkg.ParseCWEID(input)
+			id, err := cweskills.ParseCWEID(input)
 			if err != nil {
 				results = append(results, containsResult{CWEID: input, Exists: false})
 				continue
@@ -123,7 +123,7 @@ var registryContainsCmd = &cobra.Command{
 				}
 			}
 			results = append(results, containsResult{
-				CWEID:  cwepkg.FormatCWEIDFromInt(id),
+				CWEID:  cweskills.FormatCWEIDFromInt(id),
 				Exists: exists,
 				Type:   entryType,
 			})
@@ -162,7 +162,7 @@ var registryListViewsCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "视图 (%d 项):\n", len(views))
 		for _, v := range views {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s [%s]\n",
-				cwepkg.FormatCWEIDFromInt(v.ID), v.Name, v.Type)
+				cweskills.FormatCWEIDFromInt(v.ID), v.Name, v.Type)
 		}
 		return nil
 	},
@@ -186,7 +186,7 @@ var registryListCategoriesCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "类别 (%d 项):\n", len(cats))
 		for _, c := range cats {
 			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n",
-				cwepkg.FormatCWEIDFromInt(c.ID), c.Name)
+				cweskills.FormatCWEIDFromInt(c.ID), c.Name)
 		}
 		return nil
 	},
@@ -203,7 +203,7 @@ var registryParentsCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -224,7 +224,7 @@ var registryChildrenCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -245,7 +245,7 @@ var registryAncestorsCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -266,7 +266,7 @@ var registryDescendantsCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -287,7 +287,7 @@ var registryPeersCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -308,7 +308,7 @@ var registryViewMembersCmd = &cobra.Command{
 			return err
 		}
 
-		viewID, err := cwepkg.ParseCWEID(args[0])
+		viewID, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -329,7 +329,7 @@ var registryCategoryMembersCmd = &cobra.Command{
 			return err
 		}
 
-		catID, err := cwepkg.ParseCWEID(args[0])
+		catID, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -350,7 +350,7 @@ var registryMemberOfCmd = &cobra.Command{
 			return err
 		}
 
-		id, err := cwepkg.ParseCWEID(args[0])
+		id, err := cweskills.ParseCWEID(args[0])
 		if err != nil {
 			return err
 		}
@@ -398,11 +398,11 @@ var registryExportCmd = &cobra.Command{
 
 // 辅助函数
 
-func loadRegistry() (*cwepkg.Registry, error) {
+func loadRegistry() (*cweskills.Registry, error) {
 	if registryXMLPath == "" {
 		return nil, fmt.Errorf("请通过 --xml 参数指定CWE XML目录文件路径")
 	}
-	parser := cwepkg.NewXMLParser()
+	parser := cweskills.NewXMLParser()
 	registry, err := parser.ParseFile(registryXMLPath)
 	if err != nil {
 		return nil, fmt.Errorf("解析XML文件失败: %w", err)
@@ -410,8 +410,8 @@ func loadRegistry() (*cwepkg.Registry, error) {
 	return registry, nil
 }
 
-func printCWEDetail(cmd *cobra.Command, cwe *cwepkg.CWE) {
-	fmt.Fprintf(cmd.OutOrStdout(), "=== %s ===\n", cwepkg.FormatCWEIDFromInt(cwe.ID))
+func printCWEDetail(cmd *cobra.Command, cwe *cweskills.CWE) {
+	fmt.Fprintf(cmd.OutOrStdout(), "=== %s ===\n", cweskills.FormatCWEIDFromInt(cwe.ID))
 	fmt.Fprintf(cmd.OutOrStdout(), "  名称:     %s\n", cwe.Name)
 	fmt.Fprintf(cmd.OutOrStdout(), "  抽象层级: %s\n", cwe.Abstraction)
 	fmt.Fprintf(cmd.OutOrStdout(), "  状态:     %s\n", cwe.Status)
@@ -432,7 +432,7 @@ func printCWEDetail(cmd *cobra.Command, cwe *cwepkg.CWE) {
 	}
 }
 
-func printIDResults(cmd *cobra.Command, relType string, id int, ids []int, registry *cwepkg.Registry) error {
+func printIDResults(cmd *cobra.Command, relType string, id int, ids []int, registry *cweskills.Registry) error {
 	type idEntry struct {
 		ID   int    `json:"id"`
 		Name string `json:"name,omitempty"`
@@ -449,19 +449,19 @@ func printIDResults(cmd *cobra.Command, relType string, id int, ids []int, regis
 
 	if outputFormat == "json" {
 		return printJSON(cmd, map[string]interface{}{
-			"cwe_id":  cwepkg.FormatCWEIDFromInt(id),
+			"cwe_id":  cweskills.FormatCWEIDFromInt(id),
 			"type":    relType,
 			"results": entries,
 			"count":   len(entries),
 		})
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cwepkg.FormatCWEIDFromInt(id), relType, len(entries))
+	fmt.Fprintf(cmd.OutOrStdout(), "%s 的 %s (%d 项):\n", cweskills.FormatCWEIDFromInt(id), relType, len(entries))
 	for _, e := range entries {
 		if e.Name != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cwepkg.FormatCWEIDFromInt(e.ID), e.Name)
+			fmt.Fprintf(cmd.OutOrStdout(), "  %s - %s\n", cweskills.FormatCWEIDFromInt(e.ID), e.Name)
 		} else {
-			fmt.Fprintf(cmd.OutOrStdout(), "  %s\n", cwepkg.FormatCWEIDFromInt(e.ID))
+			fmt.Fprintf(cmd.OutOrStdout(), "  %s\n", cweskills.FormatCWEIDFromInt(e.ID))
 		}
 	}
 	return nil

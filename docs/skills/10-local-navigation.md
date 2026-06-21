@@ -44,9 +44,9 @@ cwe nav depth CWE-79 CWE-1 --xml <file>
 ## SDK API
 
 ```go
-registry, _ := cwepkg.NewXMLParser().ParseFile("cwec_latest.xml")
+registry, _ := cweskills.NewXMLParser().ParseFile("cwec_latest.xml")
 registry.BuildIndexes()
-nav := cwepkg.NewNavigator(registry)
+nav := cweskills.NewNavigator(registry)
 
 parents := nav.Parents(79)
 children := nav.Children(74)
