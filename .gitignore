@@ -43,6 +43,10 @@ docs/.vitepress/dist/
 examples/*/main
 examples/*/*.exe
 
+# Website
+website/node_modules/
+website/dist/
+
 # Temporary files
 tmp/
 temp/
