@@ -1,5 +1,6 @@
 import { Typography, Row, Col, Collapse } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
+import { asset } from '../constants'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -163,7 +164,7 @@ const SkillsSection: React.FC = () => {
                 ),
                 children: (
                   <img
-                    src="/cwe-skills/cli-command-tree.png"
+                    src={asset('cli-command-tree.png')}
                     alt="CLI Command Tree"
                     style={{
                       width: '100%',

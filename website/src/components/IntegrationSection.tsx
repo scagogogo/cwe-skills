@@ -8,6 +8,7 @@ import {
   DownloadOutlined,
   ToolOutlined,
 } from '@ant-design/icons'
+import { asset } from '../constants'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -231,7 +232,7 @@ const IntegrationSection: React.FC = () => {
         {/* 架构图 */}
         <div style={{ maxWidth: 860, margin: '40px auto 0' }}>
           <img
-            src="/cwe-skills/architecture.png"
+            src={asset('architecture.png')}
             alt="Architecture"
             style={{
               width: '100%',

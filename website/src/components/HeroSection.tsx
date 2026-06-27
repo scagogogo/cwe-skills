@@ -4,6 +4,7 @@ import {
   SafetyCertificateOutlined,
   ApiOutlined,
 } from '@ant-design/icons'
+import { asset } from '../constants'
 
 const { Title, Paragraph } = Typography
 
@@ -142,7 +143,7 @@ const HeroSection: React.FC = () => {
       {/* 特性概览图 */}
       <div style={{ maxWidth: 860, margin: '56px auto 0' }}>
         <img
-          src="/cwe-skills/feature-tree.png"
+          src={asset('feature-tree.png')}
           alt="CWE Skills Feature Tree"
           style={{
             width: '100%',

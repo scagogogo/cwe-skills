@@ -6,6 +6,7 @@ import {
   CodeOutlined,
   WifiOutlined,
 } from '@ant-design/icons'
+import { asset } from '../constants'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -85,7 +86,7 @@ const ProblemSection: React.FC = () => {
         {/* 数据流架构图 */}
         <div style={{ maxWidth: 860, margin: '0 auto 40px' }}>
           <img
-            src="/cwe-skills/data-flow.png"
+            src={asset('data-flow.png')}
             alt="Data Flow"
             style={{
               width: '100%',

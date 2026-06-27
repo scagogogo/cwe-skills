@@ -13,6 +13,7 @@ import {
   ExportOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons'
+import { asset } from '../constants'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -192,7 +193,7 @@ const FeaturesSection: React.FC = () => {
         {/* SDK API 地图 */}
         <div style={{ maxWidth: 860, margin: '40px auto 0' }}>
           <img
-            src="/cwe-skills/sdk-api-map.png"
+            src={asset('sdk-api-map.png')}
             alt="SDK API Map"
             style={{
               width: '100%',
