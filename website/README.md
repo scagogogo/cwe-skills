@@ -1,32 +1,31 @@
-# React + TypeScript + Vite
+# CWE Skills 文档站
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+基于 [VitePress](https://vitepress.dev/) 构建的 CWE Skills 官方文档站。
 
-Currently, two official plugins are available:
+## 本地开发
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cd website
+npm install
+npm run dev      # 启动开发服务器
+npm run build    # 构建静态站点到 .vitepress/dist
+npm run preview  # 本地预览构建产物
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 目录结构
+
+- `index.md` — 首页
+- `guide/` — 使用指南（25 篇）
+- `sdk/` — Go SDK API 参考（120 篇）
+- `cli/` — CLI 命令参考（67 篇）
+- `enums/` — 枚举类型参考（10 篇）
+- `wellknown/` — 知名列表（5 篇）
+- `skills/` — AI Skills 接入（13 篇）
+- `examples/` — 实战教程（8 篇）
+- `.vitepress/config.ts` — 站点配置
+- `.vitepress/theme/` — 自定义主题
+- `public/` — 静态资源（架构图等）
+
+## 部署
+
+通过 GitHub Actions（`.github/workflows/deploy-website.yml`）自动构建并部署到 GitHub Pages。

@@ -42,7 +42,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/dist
+          # VitePress 构建产物在 .vitepress/dist
+          path: website/.vitepress/dist
 
   deploy:
     needs: build

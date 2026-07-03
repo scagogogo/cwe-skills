@@ -1,0 +1,47 @@
+/* CWE Skills 文档站自定义主题样式 —— 覆盖 VitePress 默认主题令牌 */
+
+:root {
+  --vp-c-brand-1: #3c6c8f;
+  --vp-c-brand-2: #2f5573;
+  --vp-c-brand-3: #4a7fa8;
+  --vp-c-brand-light: #5a90b8;
+  --vp-c-brand-dark: #2a4d6a;
+
+  --vp-c-tip: #3c6c8f;
+  --vp-c-warning: #d97706;
+  --vp-c-danger: #dc2626;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #3c6c8f, #6ba3c8);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #d4e4f0 50%, #e8f1f8 50%);
+  --vp-home-hero-image-filter: blur(40px);
+}
+
+.dark {
+  --vp-c-brand-1: #6ba3c8;
+  --vp-c-brand-2: #5a90b8;
+  --vp-c-brand-3: #4a7fa8;
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #1a2e3d 50%, #243f54 50%);
+}
+
+.VPHero .VPImage {
+  max-width: 520px;
+  border-radius: 12px;
+}
+
+.VPDoc .custom-block-title {
+  font-weight: 700;
+}
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+  overflow: auto;
+}
+
+.vp-doc :not(h1,h2,h3,h4,h5,h6):not(a):not(code) code {
+  background-color: var(--vp-c-default-soft);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
