@@ -1,12 +1,19 @@
-# CWE Skills — AI原生的CWE集成
+<p align="center">
+  <img src="docs/logo.svg" alt="CWE Skills" width="160" />
+</p>
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/cwe-skills.svg)](https://pkg.go.dev/github.com/scagogogo/cwe-skills)
-[![CI](https://github.com/scagogogo/cwe-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/scagogogo/cwe-skills/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<h1 align="center">CWE Skills — AI 原生的 CWE 集成</h1>
 
-**AI原生的 [CWE（通用缺陷枚举）](https://cwe.mitre.org/) 集成层** — 四种接入方式：**Skills**、Go SDK、CLI 和 MCP。
+<p align="center">
+  <a href="https://pkg.go.dev/github.com/scagogogo/cwe-skills"><img src="https://pkg.go.dev/badge/github.com/scagogogo/cwe-skills.svg" alt="Go Reference" /></a>
+  <a href="https://github.com/scagogogo/cwe-skills/actions/workflows/ci.yml"><img src="https://github.com/scagogogo/cwe-skills/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+  <a href="https://scagogogo.github.io/cwe-skills/"><img src="https://img.shields.io/badge/文档-在线-3c6c8f.svg" alt="Docs" /></a>
+</p>
 
-> 🇬🇧 [English](README.md)
+<p align="center"><b>AI 原生的 <a href="https://cwe.mitre.org/">CWE（通用缺陷枚举）</a> 集成层</b> — 四种接入方式：<b>Skills</b>、Go SDK、CLI 和 MCP。</p>
+
+<p align="center">🇬🇧 <a href="README.md">English</a> · 📖 <a href="https://scagogogo.github.io/cwe-skills/">文档站</a></p>
 
 ---
 
