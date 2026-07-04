@@ -46,6 +46,100 @@ SDK 由以下源文件组成，每个文件/函数都有对应的文档页：
 | ⚠️ 错误 | `errors.go` | 结构化错误体系 | [错误处理](./errors) |
 | 📦 包信息 | `cwe.go` | `Version` 常量 | [包与版本](./package) |
 
+### 📊 核心类结构图
+
+SDK 各核心类型的关系与组合方式：
+
+```mermaid
+classDiagram
+    class APIClient {
+        +GetWeakness(id) *CWE
+        +GetParents(id) []Relationship
+        +Close()
+    }
+    class HTTPClient {
+        +Get(url) Response
+        +retries
+    }
+    class RateLimiter {
+        +rate float64
+        +burst int
+        +Allow() bool
+        +Wait(ctx) error
+    }
+    class XMLParser {
+        +ParseFile(path) *Registry
+    }
+    class Registry {
+        +weaknesses map
+        +indexesBuilt bool
+        +Register(cwe)
+        +BuildIndexes()
+    }
+    class Navigator {
+        +Parents(id) []*CWE
+        +ShortestPath(a,b) []int
+    }
+    class TreeNode {
+        +CWE *CWE
+        +Children []*TreeNode
+        +Depth int
+    }
+
+    APIClient *-- HTTPClient : 内含
+    HTTPClient *-- RateLimiter : 限流
+    XMLParser ..> Registry : 产出
+    APIClient ..> Registry : 增量灌入
+    Navigator --> Registry : 读索引
+    TreeNode --> Registry : 读 childIndex
+```
+
+### 🗺️ 数据流模块地图
+
+从数据源到输出的完整链路：
+
+```mermaid
+flowchart LR
+    subgraph SRC["数据源"]
+        API["🌐 MITRE REST API"]
+        XML["📥 XML 目录"]
+    end
+
+    subgraph PARSE["解析/拉取"]
+        APIC["APIClient"]
+        XMLP["XMLParser"]
+    end
+
+    REG["Registry\n内存存储 + 索引"]
+    BUILD["BuildIndexes\n5 张关系索引"]
+
+    subgraph USE["消费"]
+        NAV["🧭 Navigator"]
+        TREE["🌳 BuildTree"]
+        SRCH["🔍 FindBy*/Filter"]
+        SER["📦 序列化\nJSON/XML/CSV"]
+    end
+
+    API --> APIC
+    XML --> XMLP
+    APIC --> REG
+    XMLP --> REG
+    REG --> BUILD
+    BUILD --> NAV
+    BUILD --> TREE
+    REG --> SRCH
+    REG --> SER
+
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class API,APIC online
+    class XML,XMLP offline
+    class REG,BUILD core
+    class NAV,TREE,SRCH,SER local
+```
+
 ## 🚀 5 分钟上手
 
 ```go
