@@ -59,7 +59,7 @@ flowchart TB
 | 1 | **Skills** | AI agents (Claude, GPT, etc.) | Copy the prompt below |
 | 2 | **Go SDK** | Go applications & libraries | `go get github.com/scagogogo/cwe-skills` |
 | 3 | **CLI** | Shell scripts & dev workflows | Download from [Releases](https://github.com/scagogogo/cwe-skills/releases/latest) |
-| 4 | **MCP** | MCP-compatible AI tools | *(coming soon)* |
+| 4 | **MCP** | MCP-compatible AI tools | `go build ./cmd/cwe-mcp` |
 
 ---
 
@@ -343,7 +343,32 @@ cwe wellknown check CWE-79 -o json
 
 ## 4. MCP
 
-*(MCP server coming soon — track progress in [Issues](https://github.com/scagogogo/cwe-skills/issues))*
+The `cwe-mcp` server exposes 15 tools (parse, validate, extract, get_weakness, get_ancestors, build_tree, search_keyword, etc.) over stdio/SSE for MCP-compatible AI tools like Claude Desktop.
+
+```bash
+# Build
+go build -o cwe-mcp ./cmd/cwe-mcp/
+
+# Run (stdio for local clients)
+./cwe-mcp --xml cwec_v4.15.xml
+
+# Run (SSE for remote)
+./cwe-mcp --transport http --addr :8080
+```
+
+Configure Claude Desktop (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "cwe-skills": {
+      "command": "/path/to/cwe-mcp",
+      "args": ["--xml", "/path/to/cwec_v4.15.xml"]
+    }
+  }
+}
+```
+
+→ **[MCP integration guide](https://scagogogo.github.io/cwe-skills/guide/integration-mcp)**
 
 ---
 

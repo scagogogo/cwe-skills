@@ -15,12 +15,12 @@ CWE Skills 提供 **四种** 接入方式，覆盖人类开发者、Go 应用、
 |------|--------|--------|-----|-----|
 | **谁在用** | AI 代理（Claude/GPT） | Go 应用与库 | Shell/CI/开发者 | MCP 兼容 AI 工具 |
 | **形态** | 提示词 | Go 包 | 二进制可执行文件 | MCP 服务器 |
-| **安装** | 复制提示词 | `go get` | 下载二进制 | *(规划中)* |
+| **安装** | 复制提示词 | `go get` | 下载二进制 | `go build ./cmd/cwe-mcp` |
 | **代码量** | 零代码 | 写 Go | 写 Shell | 零代码 |
 | **输出** | AI 调用 CLI（JSON） | Go 对象 | text / JSON | MCP 工具调用 |
 | **在线能力** | ✅（CLI 调 API） | ✅ | ✅ | ✅ |
 | **离线能力** | ✅（CLI 调 XML） | ✅ | ✅ | ✅ |
-| **状态** | <Badge type="tip" text="可用" /> | <Badge type="tip" text="可用" /> | <Badge type="tip" text="可用" /> | <Badge type="warning" text="规划中" /> |
+| **状态** | <Badge type="tip" text="可用" /> | <Badge type="tip" text="可用" /> | <Badge type="tip" text="可用" /> | <Badge type="tip" text="可用" /> |
 
 ::: tip 四种方式能力对等
 Skills / SDK / CLI / MCP 背后是同一套 `cweskills` 包能力，**功能上没有高低之分**，区别只在「谁来调用、怎么调用」。选哪个取决于你的集成场景。
@@ -94,14 +94,14 @@ cwe parse CWE-79 -o json   # 脚本友好
 
 ---
 
-## 🌐 4. MCP — AI 工具协议接入（规划中）
+## 🌐 4. MCP — AI 工具协议接入
 
-MCP（Model Context Protocol）是 AI 工具调用的标准化协议。CWE Skills 计划提供 MCP 服务器，让任何 MCP 兼容的 AI 工具能以「工具调用」方式访问 CWE 能力，无需 AI 自己跑 Shell 命令。
+MCP（Model Context Protocol）是 AI 工具调用的标准化协议。CWE Skills 提供官方 MCP 服务器 `cwe-mcp`，暴露 15 个工具，让任何 MCP 兼容的 AI 工具能以「工具调用」方式访问 CWE 能力，无需 AI 自己跑 Shell 命令。
 
-**最适合**：MCP 兼容的 AI 工具生态，需要标准化工具调用而非裸 CLI 的场景。
+**最适合**：MCP 兼容的 AI 工具生态（Claude Desktop、Cursor 等），需要标准化工具调用而非裸 CLI 的场景，沙箱/受限环境。
 
-- 状态：<Badge type="warning" text="规划中" />
-- 愿景与路线图见 [MCP 接入](./integration-mcp)
+- 状态：<Badge type="tip" text="可用" /> <Badge type="info" text="15 个工具" />
+- 安装与工具清单见 [MCP 接入](./integration-mcp)
 
 ---
 

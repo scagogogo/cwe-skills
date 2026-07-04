@@ -59,7 +59,7 @@ flowchart TB
 | 1 | **Skills** | AI代理（Claude、GPT等） | 复制下方提示词 |
 | 2 | **Go SDK** | Go应用和库 | `go get github.com/scagogogo/cwe-skills` |
 | 3 | **CLI** | Shell脚本和开发工作流 | 从 [Releases](https://github.com/scagogogo/cwe-skills/releases/latest) 下载 |
-| 4 | **MCP** | MCP兼容的AI工具 | *(即将推出)* |
+| 4 | **MCP** | MCP兼容的AI工具 | `go build ./cmd/cwe-mcp` |
 
 ---
 
@@ -342,7 +342,32 @@ cwe wellknown check CWE-79 -o json
 
 ## 4. MCP
 
-*(MCP服务器即将推出 — 在 [Issues](https://github.com/scagogogo/cwe-skills/issues) 追踪进度)*
+`cwe-mcp` 服务器通过 stdio/SSE 暴露 15 个工具（parse、validate、extract、get_weakness、get_ancestors、build_tree、search_keyword 等），供 Claude Desktop 等 MCP 兼容 AI 工具调用。
+
+```bash
+# 构建
+go build -o cwe-mcp ./cmd/cwe-mcp/
+
+# 运行（stdio 模式，供本地客户端）
+./cwe-mcp --xml cwec_v4.15.xml
+
+# 运行（SSE 模式，远程）
+./cwe-mcp --transport http --addr :8080
+```
+
+配置 Claude Desktop（`claude_desktop_config.json`）：
+```json
+{
+  "mcpServers": {
+    "cwe-skills": {
+      "command": "/path/to/cwe-mcp",
+      "args": ["--xml", "/path/to/cwec_v4.15.xml"]
+    }
+  }
+}
+```
+
+→ **[MCP 接入指南](https://scagogogo.github.io/cwe-skills/guide/integration-mcp)**
 
 ---
 

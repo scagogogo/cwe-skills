@@ -67,6 +67,23 @@ builds:
       # Solaris
       - solaris_amd64
 
+  - id: cwe-mcp
+    main: ./cmd/cwe-mcp/
+    binary: cwe-mcp
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - darwin_amd64
+      - darwin_arm64
+      - windows_amd64
+      - windows_arm64
+
 archives:
   - id: cwe-archive
     name_template: >-
