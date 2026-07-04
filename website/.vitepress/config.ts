@@ -1,11 +1,12 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // CWE Skills 官方文档站 VitePress 配置
 // 仓库地址
 const repoURL = 'https://github.com/scagogogo/cwe-skills'
 const docsBase = '/cwe-skills/' // GitHub Pages 子路径，仓库名
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   lang: 'zh-CN',
   title: 'CWE Skills',
   titleTemplate: 'CWE Skills · AI原生CWE集成',
@@ -13,6 +14,20 @@ export default defineConfig({
   base: docsBase,
   cleanUrls: true,
   lastUpdated: true,
+
+  // Mermaid 图表主题：与品牌色 #3c6c8f 协调，dark 模式由插件自动切换
+  mermaid: {
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#e8f1f8',
+      primaryBorderColor: '#3c6c8f',
+      primaryTextColor: '#1d3a4f',
+      lineColor: '#3c6c8f',
+      secondaryColor: '#f0f4f8',
+      tertiaryColor: '#f8fafc',
+      fontFamily: 'inherit',
+    },
+  },
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${docsBase}favicon.svg` }],
@@ -545,4 +560,4 @@ export default defineConfig({
 
     externalLinkIcon: true,
   },
-})
+}))
