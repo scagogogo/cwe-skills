@@ -19,6 +19,41 @@
 
 ## 🚀 Four Ways to Integrate
 
+```mermaid
+flowchart TB
+    subgraph APP["应用层"]
+        AI["AI 代理\nClaude/GPT"]
+        GO["Go 应用"]
+        SH["Shell 脚本"]
+        MCP["MCP 工具"]
+    end
+
+    subgraph SDK["CWE Skills 集成层"]
+        SK["🦾 Skills"]
+        GS["🔧 Go SDK"]
+        CLI["💻 CLI"]
+        MC["MCP Server"]
+    end
+
+    subgraph DATA["数据源"]
+        API["MITRE REST API"]
+        XML["XML 目录"]
+        LIST["内置列表\nTop25/OWASP/SANS"]
+    end
+
+    AI --> SK --> API & XML & LIST
+    GO --> GS --> API & XML & LIST
+    SH --> CLI --> API & XML & LIST
+    MCP --> MC --> API & XML & LIST
+
+    classDef app fill:#dcfce7,stroke:#16a34a,color:#166534
+    classDef sdk fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef data fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    class APP app
+    class SDK sdk
+    class DATA data
+```
+
 | # | Method | Best For | One-Line Setup |
 |---|--------|----------|----------------|
 | 1 | **Skills** | AI agents (Claude, GPT, etc.) | Copy the prompt below |
@@ -81,6 +116,37 @@ Progressive capability docs: https://github.com/scagogogo/cwe-skills/tree/main/d
 
 ## 2. Go SDK
 
+```mermaid
+flowchart LR
+    subgraph SRC["数据源"]
+        API["MITRE API"]
+        XML["XML 目录"]
+    end
+    subgraph PARSE["解析"]
+        AC["APIClient"]
+        XP["XMLParser"]
+    end
+    REG["Registry\n+ 索引"]
+    subgraph USE["消费"]
+        NAV["Navigator"]
+        TREE["BuildTree"]
+        SRCH["FindBy*/Filter"]
+        SER["MarshalJSON/CSV"]
+    end
+    API --> AC --> REG
+    XML --> XP --> REG
+    REG --> NAV & TREE & SRCH & SER
+
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class API,AC online
+    class XML,XP offline
+    class REG core
+    class USE local
+```
+
 ```go
 import (
     "context"
@@ -132,6 +198,45 @@ csvData, _ := registry.ExportCSV()
 ---
 
 ## 3. CLI
+
+```mermaid
+mindmap
+  root((cwe CLI))
+    🆔 ID 工具
+      parse
+      validate
+      format
+      extract
+      compare
+    📚 枚举
+      enum abstraction
+      enum status
+      enum relationship
+    🏆 知名列表
+      wellknown top25
+      wellknown owasp
+      wellknown sans
+      wellknown check
+    🌐 API
+      show
+      relations
+      api-version
+    🔍 搜索过滤
+      search
+      filter
+      stats
+    🗃️ 注册表
+      registry load/get
+      registry export
+    🧭 导航
+      nav parents/children
+      nav ancestors/descendants
+      nav shortest-path
+    🌳 树
+      tree build
+      tree forest
+      tree path
+```
 
 ### Install
 
