@@ -44,21 +44,16 @@ export default withMermaid(defineConfig({
   themeConfig: {
     logo: '/icon.svg',
 
-    // 顶部导航
+    // 顶部导航 —— 不折叠，全部展开为顶级菜单
     nav: [
       { text: '指南 📖', link: '/guide/what-is-cwe-skills' },
       { text: 'SDK API 🔧', link: '/sdk/overview' },
       { text: 'CLI 命令 💻', link: '/cli/overview' },
       { text: '枚举参考 📚', link: '/enums/abstraction' },
-      {
-        text: '更多 ⋯',
-        items: [
-          { text: '🦾 Skills（AI代理）', link: '/skills/' },
-          { text: '🏆 知名列表', link: '/wellknown/cwe-top-25' },
-          { text: '🗺️ 示例与教程', link: '/examples/' },
-          { text: '📝 更新日志', link: '/changelog' },
-        ],
-      },
+      { text: '🦾 Skills', link: '/skills/' },
+      { text: '🏆 知名列表', link: '/wellknown/cwe-top-25' },
+      { text: '🗺️ 示例', link: '/examples/' },
+      { text: '📝 更新日志', link: '/changelog' },
     ],
 
     // 社交链接
