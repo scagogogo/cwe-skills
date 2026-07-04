@@ -19,14 +19,21 @@ CWE Skills 的在线路径调用 MITRE REST API（`https://cwe-api.mitre.org/api
 
 `RateLimiter` 基于**令牌桶（token bucket）**算法：
 
-```text
-        ┌─────────────────────────────┐
-        │   令牌桶（容量 = burst）     │
-        │  ███████░░░  当前令牌数      │
-        └────────────┬────────────────┘
-                     │ 每秒补充 rate 个令牌
-                     ▼
-   请求来了 ──► 取 1 个令牌 ──► 有令牌？放行 : 等待
+```mermaid
+flowchart LR
+    BUCKET["令牌桶 容量=burst\n当前令牌数 ███████░░░"]
+    BUCKET -- "每秒补充 rate 个令牌" --> BUCKET
+    REQ["请求来了"] --> TAKE["取 1 个令牌"]
+    TAKE --> Q{"有令牌？"}
+    Q -- "是" --> PASS["放行"]
+    Q -- "否" --> WAIT["等待令牌补充"]
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    class BUCKET,TAKE core
+    class Q decision
+    class REQ,PASS,WAIT online
 ```
 
 - **rate**：令牌补充速率（每秒补充多少令牌），即稳态请求速率上限。
@@ -72,13 +79,19 @@ rl.WaitForRequest(ctx) // 阻塞直到拿到令牌
 
 当请求返回**服务端错误（5xx）**或**速率限制（429）**时，`HTTPClient` 会自动重试，采用**指数退避（exponential backoff）**：
 
-```text
-请求失败
-  │
-  ├─ 第 1 次重试：等待 delay
-  ├─ 第 2 次重试：等待 delay × 2
-  ├─ 第 3 次重试：等待 delay × 4
-  └─ ... 直到 maxRetries 次，返回最后一个错误
+```mermaid
+stateDiagram-v2
+    [*] --> 请求
+    请求 --> 成功: 2xx
+    请求 --> 重试1: 5xx / 429
+    重试1 --> 成功: 2xx
+    重试1 --> 重试2: 失败 (等待 delay)
+    重试2 --> 成功: 2xx
+    重试2 --> 重试3: 失败 (等待 delay×2)
+    重试3 --> 成功: 2xx
+    重试3 --> 返回错误: 达 maxRetries (等待 delay×4)
+    成功 --> [*]
+    返回错误 --> [*]
 ```
 
 ```go

@@ -147,6 +147,22 @@ type CompoundElement struct {
 
 每个条目在 `CWEType` 字段里标记自己是哪一类：`weakness`、`category`、`view`、`compound_element`。从 XML 解析或 API 返回时，CWE Skills 会据此把条目分发到 `Registry` 对应的集合（`weaknesses` / `categories` / `views` / `compoundElements`）。
 
+```mermaid
+flowchart LR
+    SRC["XML / API 数据"] --> DISP{"CWEType?"}
+    DISP -- "weakness" --> W["Registry.weaknesses\n(*CWE)"]
+    DISP -- "category" --> C["Registry.categories\n(*Category)"]
+    DISP -- "view" --> V["Registry.views\n(*View)"]
+    DISP -- "compound_element" --> CE["Registry.compoundElements\n(*CompoundElement)"]
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    class SRC offline
+    class DISP decision
+    class W,C,V,CE core
+```
+
 ---
 
 ## 🔗 关系：CWE 是一张图

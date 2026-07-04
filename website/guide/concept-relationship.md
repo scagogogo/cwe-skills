@@ -67,11 +67,15 @@ cweskills.RelationshipPeerOf.IsPeer()            // true
 | `MemberOf` | A MemberOf B | A 是类别/视图 B 的成员 |
 | `Has_Member` | A Has_Member B | 类别/视图 A 包含成员 B |
 
-```text
-        CWE-74 (注入, Class)
-         ▲ ChildOf
-         │
-        CWE-79 (XSS, Base)
+```mermaid
+flowchart TD
+    CWE74["CWE-74 注入 (Class)"]
+    CWE79["CWE-79 XSS (Base)"]
+    CWE74 -- "ParentOf" --> CWE79
+    CWE79 -- "ChildOf" --> CWE74
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    class CWE74,CWE79 core
 ```
 
 ::: tip ChildOf 是主力
@@ -100,8 +104,13 @@ nav.Siblings(79)     // 同级（同父级的其他子级）
 | `CanPrecede` | A CanPrecede B | A 可前置 B（A 发生后 B 才可能） |
 | `CanFollow` | A CanFollow B | A 可跟随 B（B 发生后 A 才可能） |
 
-```text
-[整数溢出] --CanPrecede--> [缓冲区溢出] --CanPrecede--> [任意代码执行]
+```mermaid
+flowchart LR
+    INT["整数溢出"] -- "CanPrecede" --> BUF["缓冲区溢出"]
+    BUF -- "CanPrecede" --> ACE["任意代码执行"]
+
+    classDef seq fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    class INT,BUF,ACE seq
 ```
 
 ```go
@@ -125,11 +134,20 @@ nav.ChainMembers(680) // 整条链的成员
 | `Requires` | A Requires B | A（复合）需要 B 存在 |
 | `RequiredBy` | A RequiredBy B | A 被 B（复合）所需要 |
 
-```text
-         [复合弱点 CSRF]
-          │ Requires   │ Requires   │ Requires
-          ▼            ▼            ▼
-       [弱点A]      [弱点B]      [弱点C]   ← 缺一不可
+```mermaid
+flowchart TD
+    CSRF["复合弱点 CSRF"]
+    A["弱点 A"]
+    B["弱点 B"]
+    C["弱点 C"]
+    CSRF -- "Requires" --> A
+    CSRF -- "Requires" --> B
+    CSRF -- "Requires" --> C
+
+    classDef dep fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    class CSRF core
+    class A,B,C dep
 ```
 
 ```go
@@ -162,19 +180,23 @@ nav.CanAlsoBe(79)    // CWE-79 也可以是哪些
 
 ## 🧭 关系图总览
 
-```text
-            ┌──────────── 层级 (Hierarchical) ────────────┐
-            │  ChildOf  ParentOf  MemberOf  Has_Member    │  → 建树、上下钻
-            └─────────────────────────────────────────────┘
-            ┌──────────── 顺序 (Sequential) ──────────────┐
-            │  CanPrecede  CanFollow                       │  → 链式攻击路径
-            └─────────────────────────────────────────────┘
-            ┌──────────── 依赖 (Dependency) ──────────────┐
-            │  Requires  RequiredBy                       │  → 复合弱点并存
-            └─────────────────────────────────────────────┘
-            ┌──────────── 对等 (Peer) ────────────────────┐
-            │  PeerOf  CanAlsoBe                          │  → 相似性
-            └─────────────────────────────────────────────┘
+```mermaid
+mindmap
+  root((10 种关系))
+    层级 Hierarchical
+      ChildOf
+      ParentOf
+      MemberOf
+      Has_Member
+    顺序 Sequential
+      CanPrecede
+      CanFollow
+    依赖 Dependency
+      Requires
+      RequiredBy
+    对等 Peer
+      PeerOf
+      CanAlsoBe
 ```
 
 ---

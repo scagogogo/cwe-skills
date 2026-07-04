@@ -56,18 +56,38 @@ const (
 | **Explicit Slice** | 与外部因素相关的扁平列表 | 列表 | CWE-888 横截面、CWE-1400 综合字典 |
 | **Implicit Slice** | 由过滤器/属性定义的扁平列表 | 列表（动态） | 按属性筛选的视图 |
 
-```text
-Graph           ──►  有层级，能建树
-                    ┌── A
-                    │   ├── B
-                    │   └── C
-                    └── D
+```mermaid
+flowchart TB
+    subgraph G["Graph 图 — 有层级，能建树"]
+        direction TD
+        GA["A"]
+        GB["B"]
+        GC["C"]
+        GD["D"]
+        GA --> GB
+        GA --> GC
+        GD
+    end
 
-Explicit Slice  ──►  扁平，显式列出成员
-                    [A, B, C, D, ...]
+    subgraph E["Explicit Slice — 扁平显式列表"]
+        direction LR
+        EA["A"]
+        EB["B"]
+        EC["C"]
+        ED["D"]
+    end
 
-Implicit Slice  ──►  扁平，由规则定义「哪些算成员」
-                    规则: abstraction == Base && status == Stable
+    subgraph I["Implicit Slice — 由规则定义"]
+        direction LR
+        RULE["规则: abstraction==Base && status==Stable"]
+        RULE --> IA["A"]
+        RULE --> IB["B"]
+    end
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    class GA,GB,GC,GD,EA,EB,EC,ED,IA,IB core
+    class RULE decision
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
 ```
 
 ::: tip Graph 视图可建树
