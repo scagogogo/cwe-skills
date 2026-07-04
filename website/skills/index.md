@@ -107,6 +107,50 @@ curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-sk
 把这 12 篇（或其中几篇）粘进 AI 上下文，能让 AI 更精确地知道「什么场景该用哪个命令」。文档越全，AI 调用越准。
 :::
 
+12 篇技能按能力阶段渐进，依赖关系如下：
+
+```mermaid
+flowchart LR
+    subgraph A["阶段A 原子操作"]
+        S1["01 解析验证"]
+        S2["02 提取比较"]
+    end
+    subgraph B["阶段B 内置知识"]
+        S3["03 知名列表"]
+        S4["04 枚举类型"]
+    end
+    subgraph C["阶段C 在线API"]
+        S5["05 show 详情"]
+        S6["06 relations 关系"]
+        S7["07 api-version"]
+    end
+    subgraph D["阶段D 离线XML"]
+        S8["08 搜索过滤"]
+        S9["09 注册表"]
+        S10["10 导航"]
+        S11["11 树构建"]
+    end
+    subgraph E["阶段E 互操作"]
+        S12["12 序列化"]
+    end
+
+    S1 --> S2
+    S5 --> S6
+    S9 --> S10
+    S10 --> S11
+    S8 --> S12
+    S9 --> S12
+
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    class S1,S2,S3,S4 local
+    class S5,S6,S7 online
+    class S8,S9,S10,S11 offline
+    class S12 core
+```
+
 ---
 
 ## 💬 使用示例

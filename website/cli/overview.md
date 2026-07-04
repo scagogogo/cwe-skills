@@ -11,19 +11,55 @@
 
 ## 命令结构
 
-```text
-cwe                        根命令
-├── version               版本信息
-├── parse / validate / format / extract / compare / compare-int   🆔 ID 工具
-├── enum                  📚 枚举类型（abstraction/status/relationship/...）
-├── wellknown             🏆 知名列表（top25/owasp/sans/check）
-├── show                  🌐 MITRE API 弱点/类别/视图详情
-├── relations             🌐 MITRE API 关系（parents/children/ancestors/descendants）
-├── api-version           🌐 MITRE API 版本
-├── search / filter / stats   🔍 本地搜索过滤（需 --xml）
-├── registry              🗃️ 本地注册表（load/get/contains/export/...）
-├── nav                   🧭 本地关系导航（siblings/peers/shortest-path/...）
-└── tree                  🌳 层次树（build/forest/view/path/leaves）
+```mermaid
+mindmap
+  root((cwe CLI))
+    🆔 ID 工具
+      parse
+      validate
+      format
+      extract
+      compare
+      compare-int
+    📚 枚举
+      enum abstraction
+      enum status
+      enum relationship
+      enum ...
+    🏆 知名列表
+      wellknown top25
+      wellknown owasp
+      wellknown sans
+      wellknown check
+    🌐 API 详情
+      show
+      show category
+      show view
+    🌐 API 关系
+      relations parents
+      relations children
+      relations ancestors
+      relations descendants
+      api-version
+    🔍 搜索过滤
+      search
+      filter
+      stats
+    🗃️ 注册表
+      registry load
+      registry get
+      registry export
+      registry ...
+    🧭 导航
+      nav parents
+      nav siblings
+      nav shortest-path
+      nav ...
+    🌳 树
+      tree build
+      tree forest
+      tree view
+      tree leaves
 ```
 
 ## 能力分类
