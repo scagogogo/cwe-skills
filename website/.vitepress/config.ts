@@ -30,14 +30,19 @@ export default withMermaid(defineConfig({
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${docsBase}favicon.svg?v=20260704` }],
+    // SVG favicon (现代浏览器)
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${docsBase}icon.svg` }],
+    // PNG fallback (兼容旧浏览器/移动端)
+    ['link', { rel: 'icon', type: 'image/png', sizes: '512x512', href: `${docsBase}icon.png` }],
+    // Apple Touch Icon (iOS)
+    ['link', { rel: 'apple-touch-icon', href: `${docsBase}icon.png` }],
     ['meta', { name: 'theme-color', content: '#3c6c8f' }],
     ['meta', { property: 'og:title', content: 'CWE Skills · AI原生CWE集成' }],
     ['meta', { property: 'og:description', content: '统一 MITRE API、XML 目录与权威列表的 CWE 集成层' }],
   ],
 
   themeConfig: {
-    logo: '/favicon.svg?v=20260704',
+    logo: '/icon.svg',
 
     // 顶部导航
     nav: [
