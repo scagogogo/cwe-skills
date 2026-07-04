@@ -107,18 +107,24 @@ MCP（Model Context Protocol）是 AI 工具调用的标准化协议。CWE Skill
 
 ## 🧭 怎么选？
 
-```text
-你的场景是？
-│
-├─ 让 AI 代理分析 CWE ──────────► Skills（零代码，AI 跑 CLI）
-│
-├─ 在 Go 应用里集成 ────────────► Go SDK（类型化，深度集成）
-│
-├─ 写 Shell 脚本 / CI 流水线 ───► CLI（二进制，text/JSON）
-│
-├─ 快速手动查询 ────────────────► CLI（下载即用）
-│
-└─ MCP 兼容 AI 工具 ────────────► MCP（规划中，暂用 Skills/CLI 替代）
+```mermaid
+flowchart TD
+    START(["你的场景是？"]) --> Q1{"让 AI 代理分析 CWE？"}
+    Q1 -- 是 --> SKILLS["🦾 Skills\n零代码，AI 跑 CLI"]
+    Q1 -- 否 --> Q2{"在 Go 应用里集成？"}
+    Q2 -- 是 --> SDK["🔧 Go SDK\n类型化，深度集成"]
+    Q2 -- 否 --> Q3{"写 Shell 脚本 / CI 流水线？"}
+    Q3 -- 是 --> CLI["💻 CLI\n二进制，text/JSON"]
+    Q3 -- 否 --> Q4{"快速手动查询？"}
+    Q4 -- 是 --> CLI2["💻 CLI\n下载即用"]
+    Q4 -- 否 --> MCP["🌐 MCP\n规划中，暂用 Skills/CLI 替代"]
+
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    classDef start fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    class Q1,Q2,Q3,Q4 decision
+    class START start
+    class SKILLS,SDK,CLI,CLI2 local
 ```
 
 ::: tip 组合使用很常见
