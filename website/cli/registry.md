@@ -12,6 +12,51 @@ cwe registry <子命令> [flags]
 
 ## 子命令
 
+```mermaid
+flowchart TD
+    REG["cwe registry"]
+
+    subgraph LOAD["加载/查询"]
+        L1["load\n加载XML"]
+        L2["get\n获取条目"]
+        L3["contains\n检查存在"]
+    end
+
+    subgraph LIST["列表"]
+        LA["list-views\n列出视图"]
+        LB["list-categories\n列出类别"]
+    end
+
+    subgraph REL["关系"]
+        R1["parents\n父级"]
+        R2["children\n子级"]
+        R3["ancestors\n祖先"]
+        R4["descendants\n后代"]
+        R5["peers\n对等"]
+    end
+
+    subgraph MEM["成员"]
+        M1["view-members"]
+        M2["category-members"]
+        M3["member-of"]
+    end
+
+    subgraph EXPORT["导出"]
+        E1["export\nJSON/CSV"]
+    end
+
+    REG --> L1 & L2 & L3
+    REG --> LA & LB
+    REG --> R1 & R2 & R3 & R4 & R5
+    REG --> M1 & M2 & M3
+    REG --> E1
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class REG core
+    class LOAD,LIST,REL,MEM,EXPORT local
+```
+
 | 子命令 | 说明 |
 | --- | --- |
 | [`load`](./registry-load) | 加载 XML 目录并显示概要 |

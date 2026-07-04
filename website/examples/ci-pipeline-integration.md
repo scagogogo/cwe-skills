@@ -16,6 +16,28 @@ outline: [2, 3]
 
 团队想在 CI 里加一道门禁：扫描器输出的 CWE 列表里若有任何 Top 25 项，PR 检查标红，阻止合入。
 
+```mermaid
+flowchart TD
+    SCAN["扫描器输出\nscan_cwes.txt"]
+    CWES["提取 CWE 列表"]
+    CHECK["cwe wellknown check\n-o json"]
+    HITS{"Top 25 命中？"}
+
+    PASS["✅ PR 可合入"]
+    FAIL["❌ PR 标红阻断"]
+
+    SCAN --> CWES --> CHECK --> HITS
+    HITS -->|空| PASS
+    HITS -->|非空| FAIL
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class SCAN,CWES,CHECK core
+    class HITS decision
+    class PASS,FAIL local
+```
+
 ---
 
 ## 📋 前置准备

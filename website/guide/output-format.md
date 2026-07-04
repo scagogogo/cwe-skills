@@ -5,6 +5,32 @@ outline: [2, 3]
 
 # 📤 输出格式 (text/JSON)
 
+## 📤 输出格式分流
+
+```mermaid
+flowchart LR
+    CMD["cwe 命令"]
+
+    subgraph OUT["输出格式"]
+        T["-o text\n人类可读"]
+        J["-o json\n结构化"]
+    end
+
+    subgraph CONSUME["消费方"]
+        TERM["终端用户"]
+        SCRIPT["脚本 jq"]
+        AI["AI 代理"]
+    end
+
+    CMD --> T --> TERM
+    CMD --> J --> SCRIPT & AI
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class CMD core
+    class OUT,CONSUME local
+```
+
 CWE Skills 的 CLI 全部命令支持 **`-o text|json`** 双格式输出：`text` 面向人类阅读（带标签、缩进、说明），`json` 面向脚本与 AI 解析（结构化、字段稳定）。默认 `text`。这是 CLI 能同时服务开发者和自动化管道的关键设计。
 
 ::: tip 一个参数统天下

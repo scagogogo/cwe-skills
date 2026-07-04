@@ -9,22 +9,51 @@ outline: [2, 3]
 
 ## 🧩 在 SDK 中的位置
 
-```text
-数据源(XML/HTTP) → 解析 → CWE/Category/View/CompoundElement
-                                   │
-                                   ▼
-                            ┌─────────────┐
-                            │  Registry   │  ← 本文档主题
-                            └─────────────┘
-                                   │
-              ┌─────────┬──────────┼──────────┬──────────┐
-              ▼         ▼          ▼          ▼          ▼
-          Navigator   Tree     Search      Filter     Statistics
-              │         │          │          │          │
-              └─────────┴──────────┴──────────┴──────────┘
-                                   │
-                                   ▼
-                            Serializer(JSON/XML/CSV)
+```mermaid
+flowchart TD
+    subgraph SRC["数据源"]
+        XML["📥 XML 目录"]
+        HTTP["🌐 MITRE API"]
+    end
+
+    PARSE["解析/拉取"]
+    REG["Registry\n内存存储"]
+
+    subgraph IDX["索引层"]
+        BUILD["BuildIndexes\n构建 5 张索引"]
+        PARENT["parentIndex"]
+        CHILD["childIndex"]
+        ANCESTOR["ancestorIndex"]
+        VIEW["viewMembersIndex"]
+        CAT["categoryMembersIndex"]
+    end
+
+    subgraph CONSUME["消费模块"]
+        NAV["🧭 Navigator"]
+        TREE["🌳 Tree"]
+        SEARCH["🔍 Search"]
+        FILTER["🧹 Filter"]
+        STATS["📊 Stats"]
+    end
+
+    SER["📦 Serializer\nJSON/XML/CSV"]
+
+    XML --> PARSE
+    HTTP --> PARSE
+    PARSE --> REG
+    REG --> BUILD
+    BUILD --> PARENT & CHILD & ANCESTOR & VIEW & CAT
+    REG --> NAV & TREE & SEARCH & FILTER & STATS
+    REG --> SER
+
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class XML offline
+    class HTTP online
+    class REG,BUILD,PARENT,CHILD,ANCESTOR,VIEW,CAT core
+    class NAV,TREE,SEARCH,FILTER,STATS,SER local
 ```
 
 几乎所有高级功能（导航、树构建、搜索、统计）都以 `*Registry` 作为输入参数。

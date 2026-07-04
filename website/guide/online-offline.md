@@ -121,6 +121,44 @@ tree := cweskills.BuildTree(registry, 1)
 
 ## 🧭 何时用哪个
 
+```mermaid
+flowchart TD
+    START["你的需求是？"]
+
+    ONLINE["🌐 在线模式"]
+    OFFLINE["📥 离线模式"]
+
+    Q1{"查一两个CWE详情\n或API版本？"}
+    Q2{"只需要\n父子层级关系？"}
+    Q3{"需要链式/依赖/\n对等/复合关系？"}
+    Q4{"导航/建树/\n最短路径？"}
+    Q5{"批量搜索/\n多条件过滤？"}
+    Q6{"内网/CI\n禁止外网？"}
+    Q7{"想要最新数据\nXML滞后？"}
+
+    START --> Q1
+    Q1 -->|是| ONLINE
+    Q1 -->|否| Q2
+    Q2 -->|是| ONLINE
+    Q2 -->|否| Q3
+    Q3 -->|是| OFFLINE
+    Q3 -->|否| Q4
+    Q4 -->|是| OFFLINE
+    Q4 -->|否| Q5
+    Q5 -->|是| OFFLINE
+    Q5 -->|否| Q6
+    Q6 -->|是| OFFLINE
+    Q6 -->|否| Q7
+    Q7 -->|是| ONLINE
+
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    classDef online fill:#dbeafe,stroke:#2563eb,color:#1e40af
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    class Q1,Q2,Q3,Q4,Q5,Q6,Q7 decision
+    class ONLINE online
+    class OFFLINE offline
+```
+
 ```text
 你的需求是？
 │

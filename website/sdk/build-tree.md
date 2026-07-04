@@ -19,6 +19,37 @@ func BuildTree(r *Registry, rootID int) *TreeNode
 | `rootID` | `int` | 根弱点 ID |
 | 返回 | `*TreeNode` | 根节点；`rootID` 不存在时返回 `nil` |
 
+## 🔄 构建流程
+
+```mermaid
+flowchart TD
+    START["BuildTree(r, rootID)"]
+    CHECK{"rootID 存在？"}
+    ROOT["创建根节点 TreeNode"]
+    GETC["GetChildIDs(rootID)"]
+    LOOP{"有子级？"}
+    REC["递归 BuildTree(child)"]
+    ADD["添加到 Children"]
+    END["返回 TreeNode"]
+
+    START --> CHECK
+    CHECK -->|否| NIL["返回 nil"]
+    CHECK -->|是| ROOT
+    ROOT --> GETC
+    GETC --> LOOP
+    LOOP -->|否| END
+    LOOP -->|是| REC
+    REC --> ADD
+    ADD --> LOOP
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
+    class START,ROOT,GETC,ADD,END,NIL core
+    class REC local
+    class CHECK,LOOP decision
+```
+
 ::: warning 前置索引
 `BuildTree` 内部调用 `GetChildIDs`。若未 `BuildIndexes()`，树将只有根节点、无子树。
 :::

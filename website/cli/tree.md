@@ -12,6 +12,24 @@ cwe tree <子命令> [CWE-ID] [flags]
 
 ## 子命令
 
+```mermaid
+flowchart TD
+    TREE["cwe tree"]
+
+    B["build\n根节点 → 层次树"]
+    F["forest\nPillar节点 → 森林"]
+    V["view\n视图ID → 视图树"]
+    P["path\nCWE-ID → 根到该节点路径"]
+    L["leaves\n根节点 → 所有叶子"]
+
+    TREE --> B & F & V & P & L
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class TREE core
+    class B,F,V,P,L local
+```
+
 | 子命令 | 说明 |
 | --- | --- |
 | [`build`](./tree-build) | 构建指定根节点的 CWE 层次树 |

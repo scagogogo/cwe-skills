@@ -7,6 +7,43 @@ outline: [2, 3]
 
 `cweskills` 提供 `search.go` 与 `filter.go` 两套函数，在 `Registry` 上做查找、过滤、排序、分组与去重。所有函数都是**无状态**的包级函数，输入 `*Registry` 或 `[]*CWE`，输出查询结果。
 
+## 🗺️ search vs filter 分工
+
+```mermaid
+flowchart LR
+    REG["Registry"]
+
+    subgraph SEARCH["FindBy* 查找"]
+        S1["FindByID"]
+        S2["FindByKeyword"]
+        S3["FindByAbstraction"]
+        S4["FindByStatus"]
+    end
+
+    subgraph FILTER["Filter 过滤"]
+        F1["Filter"]
+        F2["SortByID"]
+        F3["SortByName"]
+        F4["GroupBy*"]
+    end
+
+    ALL["GetAll()\n遍历注册表"]
+
+    OUT["返回 []*CWE"]
+
+    REG --> ALL
+    ALL --> S1 & S2 & S3 & S4
+    ALL --> F1
+    F1 --> F2 & F3 & F4
+    S1 & S2 & S3 & S4 --> OUT
+    F2 & F3 & F4 --> OUT
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class REG core
+    class SEARCH,FILTER,ALL,OUT local
+```
+
 ## 🔍 search.go — 查找
 
 按不同维度从注册表中检索弱点，返回 `[]*CWE` 或单条 `*CWE`。

@@ -75,6 +75,25 @@ curl -sL https://github.com/scagogogo/cwe-skills/releases/latest/download/cwe-sk
 
 ## 💬 使用示例
 
+### AI 调用流程
+
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant AI as AI 代理
+    participant CLI as cwe CLI
+    participant API as MITRE API/XML
+
+    U->>AI: "CWE-89 是什么？"
+    AI->>AI: 选择命令: show
+    AI->>CLI: cwe show CWE-89 -o json
+    CLI->>API: HTTP GET /cwe/89
+    API-->>CLI: JSON 响应
+    CLI-->>AI: 结构化 JSON
+    AI->>AI: 解析 JSON 字段
+    AI-->>U: "CWE-89 是 SQL 注入..."
+```
+
 ### 示例 1：基础查询
 
 ```text

@@ -37,6 +37,39 @@ func NewXMLParser() *XMLParser
 
 ## 🔄 解析流程
 
+```mermaid
+flowchart TD
+    XML["XML 文件\ncwec_v4.15.xml"]
+
+    DECODE["Decoder 解码\nxmlWeaknessCatalog"]
+
+    subgraph CONVERT["转换与注册"]
+        W["Weaknesses\n→ convertWeakness"]
+        C["Categories\n→ convertCategory"]
+        V["Views\n→ convertView"]
+        CE["CompoundElements\n→ convertCompoundElement"]
+    end
+
+    REG["Register\nRegisterCategory\nRegisterView\nRegisterCompoundElement"]
+
+    OUT["Registry\n内存存储"]
+
+    XML --> DECODE
+    DECODE --> W & C & V & CE
+    W --> REG
+    C --> REG
+    V --> REG
+    CE --> REG
+    REG --> OUT
+
+    classDef offline fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class XML offline
+    class DECODE,REG,OUT core
+    class CONVERT local
+```
+
 1. 用 `encoding/xml` 的 `Decoder` 把 XML 解码到内部结构 `xmlWeaknessCatalog`。
 2. 遍历 `Weaknesses` → `convertWeakness` → `registry.Register`。
 3. 遍历 `Categories` → `convertCategory` → `registry.RegisterCategory`。

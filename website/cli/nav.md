@@ -12,6 +12,50 @@ cwe nav <子命令> [CWE-ID...] [flags]
 
 ## 子命令
 
+```mermaid
+flowchart TD
+    NAV["cwe nav"]
+
+    subgraph HIER["层级关系"]
+        H1["parents"]
+        H2["children"]
+        H3["ancestors"]
+        H4["descendants"]
+        H5["siblings"]
+    end
+
+    subgraph PEER["对等关系"]
+        P1["peers"]
+        P2["can-also-be"]
+    end
+
+    subgraph SEQ["顺序/依赖"]
+        S1["precede"]
+        S2["follow"]
+        S3["requires"]
+        S4["required-by"]
+    end
+
+    subgraph COMP["复合/路径"]
+        C1["chain-members"]
+        C2["composite-members"]
+        C3["shortest-path"]
+        C4["is-ancestor"]
+        C5["is-related"]
+        C6["depth"]
+    end
+
+    NAV --> H1 & H2 & H3 & H4 & H5
+    NAV --> P1 & P2
+    NAV --> S1 & S2 & S3 & S4
+    NAV --> C1 & C2 & C3 & C4 & C5 & C6
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class NAV core
+    class HIER,PEER,SEQ,COMP local
+```
+
 ### 层级关系
 
 | 子命令 | 说明 |

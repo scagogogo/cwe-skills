@@ -26,6 +26,34 @@ type DataFetcher interface {
 
 ## 🧩 实现矩阵
 
+```mermaid
+classDiagram
+    class DataFetcher {
+        <<interface>>
+        +Fetch(ctx, id) *CWE, error
+    }
+    class BasicFetcher {
+        +client *APIClient
+        +Fetch(ctx, id) *CWE, error
+        +FetchWithRelations(ctx, id) *CWE, []Relationship, error
+    }
+    class MultipleFetcher {
+        +client *APIClient
+        +FetchMultiple(ctx, ids) []*CWE, error
+        +FetchMultipleToRegistry(ctx, ids, reg) error
+    }
+    class TreeFetcher {
+        +client *APIClient
+        +registry *Registry
+        +maxDepth int
+        +FetchFullTree(ctx, id, direction) *TreeNode, error
+    }
+
+    DataFetcher <|.. BasicFetcher
+    DataFetcher <|.. MultipleFetcher
+    DataFetcher <|.. TreeFetcher
+```
+
 | 实现 | 构造函数 | 特长 | 文档 |
 | --- | --- | --- | --- |
 | `BasicFetcher` | `NewBasicFetcher(client)` | 单条 + 关系获取 | [BasicFetcher](./basic-fetcher) |

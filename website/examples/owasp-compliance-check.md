@@ -16,6 +16,27 @@ outline: [2, 3]
 
 合规审计要求证明：你的安全测试覆盖了 OWASP Top 10 的每个类别。给你一份已发现 CWE 列表，生成「覆盖了哪几项 OWASP、缺哪几项」的报告。
 
+```mermaid
+flowchart LR
+    INPUT["已发现 CWE 列表"]
+    MAP["GetOWASPCategories\n映射到 OWASP 类别"]
+    ALL["OWASPTop10\n全集"]
+    DIFF["对比计算\n覆盖 vs 缺失"]
+
+    COVER["✅ 覆盖项"]
+    MISS["❌ 缺失项"]
+    RATE["覆盖率统计"]
+
+    INPUT --> MAP --> DIFF
+    ALL --> DIFF
+    DIFF --> COVER & MISS & RATE
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class INPUT,MAP,ALL,DIFF core
+    class COVER,MISS,RATE local
+```
+
 ---
 
 ## 📋 前置准备

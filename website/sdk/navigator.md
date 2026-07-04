@@ -36,6 +36,45 @@ func NewNavigator(r *Registry) *Navigator
 | 判定 | `IsAncestorOf` / `IsDescendantOf` / `IsRelated` | [祖先与关联判定](./nav-ancestor-related) |
 | 深度 | `RelationshipDepth` | [关系深度](./nav-relationship-depth) |
 
+## 🗺️ 方法分组与数据流
+
+```mermaid
+flowchart LR
+    subgraph NAV["Navigator 方法"]
+        PARENT["Parents"]
+        CHILD["Children"]
+        ANC["Ancestors"]
+        DESC["Descendants"]
+        SIB["Siblings"]
+        PEER["Peers"]
+    end
+
+    subgraph IDX["底层索引查询"]
+        GETP["GetParentIDs"]
+        GETC["GetChildIDs"]
+        GETA["GetAncestorIDs"]
+        GETD["GetDescendantIDs"]
+        GETS["GetSiblingIDs"]
+        GETPEER["GetPeerIDs"]
+    end
+
+    RESOLVE["resolveIDs\n转换为 []*CWE"]
+
+    OUT["返回 []*CWE"]
+
+    PARENT --> GETP --> RESOLVE --> OUT
+    CHILD --> GETC --> RESOLVE --> OUT
+    ANC --> GETA --> RESOLVE --> OUT
+    DESC --> GETD --> RESOLVE --> OUT
+    SIB --> GETS --> RESOLVE --> OUT
+    PEER --> GETPEER --> RESOLVE --> OUT
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class NAV core
+    class IDX,RESOLVE,OUT local
+```
+
 所有导航方法返回 `[]*CWE`；路径/判定方法返回 `[]int` / `bool` / `int`。
 
 ## ✅ 快速上手

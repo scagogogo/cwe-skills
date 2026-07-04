@@ -7,6 +7,29 @@ outline: [2, 3]
 
 `serializer.go` 提供 `CWE` 在 JSON / XML / CSV 三种格式间的序列化与反序列化。整库级别的序列化由 [Registry](./registry) 承担（JSON/CSV），本模块聚焦**单条目与列表**级别。
 
+## 🔄 序列化路径
+
+```mermaid
+flowchart LR
+    CWE["CWE 结构体"]
+
+    subgraph SAFE["安全模型"]
+        SCWE["safeCWE\n字段控制"]
+    end
+
+    JSON["JSON"]
+    XML["XML"]
+    CSV["CSV"]
+
+    CWE --> SCWE
+    SCWE --> JSON & XML & CSV
+
+    classDef core fill:#e8f1f8,stroke:#3c6c8f,color:#1d3a4f
+    classDef local fill:#dcfce7,stroke:#16a34a,color:#166534
+    class CWE core
+    class SAFE,SCWE,JSON,XML,CSV local
+```
+
 ## 📚 本组文档导航
 
 | 文档 | 主题 | 函数 |
