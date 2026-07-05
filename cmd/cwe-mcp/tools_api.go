@@ -12,10 +12,10 @@ import (
 // registerAPITools 注册在线 MITRE API 工具。
 // 这些工具调用 MITRE REST API，受速率限制。
 func registerAPITools(s *server.MCPServer) {
-	// get_weakness —— 在线获取弱点详情
+	// get_weakness —— 在线获取弱点详情，失败时回退到离线注册表
 	s.AddTool(
 		mcp.NewTool("get_weakness",
-			mcp.WithDescription("Fetch a CWE weakness's full details from the MITRE REST API (online). Includes name, description, abstraction, status, relationships, consequences, etc. Rate-limited (~0.1 req/s)."),
+			mcp.WithDescription("Fetch a CWE weakness's full details. Tries the MITRE REST API first (online, rate-limited ~0.1 req/s); if the API is unavailable, falls back to the offline XML registry (requires --xml). Returns name, description, abstraction, status, relationships, consequences, etc."),
 			mcp.WithString("id", mcp.Required(), mcp.Description("CWE ID, e.g. 'CWE-79'")),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -30,10 +30,27 @@ func registerAPITools(s *server.MCPServer) {
 			client := cweskills.NewAPIClient()
 			defer client.Close()
 			weakness, err := client.GetWeakness(ctx, id)
-			if err != nil {
-				return errResult(fmt.Sprintf("API call failed: %v", err)), nil
+			if err == nil {
+				return wrapJSON(map[string]any{
+					"source": "online",
+					"cwe":    weakness,
+				})
 			}
-			return wrapJSON(weakness)
+			// 在线失败，尝试离线回退
+			reg, regErr := mustRegistry()
+			if regErr != nil {
+				return errResult(fmt.Sprintf("API call failed and no offline registry: api=%v; xml=%v", err, regErr)), nil
+			}
+			offline, found := reg.Get(id)
+			if !found {
+				return errResult(fmt.Sprintf("API call failed and CWE %d not in offline registry: api=%v", id, err)), nil
+			}
+			return wrapJSON(map[string]any{
+				"source":     "offline",
+				"cwe":        offline,
+				"api_error":  err.Error(),
+				"note":       "MITRE API unavailable; returned from local XML registry",
+			})
 		},
 	)
 
