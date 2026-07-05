@@ -7,7 +7,7 @@
 // 启动：
 //
 //	cwe-mcp                  # stdio 模式（默认，供 Claude Desktop 等本地客户端使用）
-//	cwe-mcp --transport http --addr :8080  # HTTP 模式（远程部署）
+//	cwe-mcp --transport http --addr :8080  # SSE 模式（远程部署）
 //
 // 离线工具（get_ancestors / build_tree 等）需要通过 --xml 指定 XML 目录：
 //
@@ -27,6 +27,9 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// mcpVersion 是 MCP 服务器自身版本（独立于 SDK 版本）。
+var mcpVersion = "0.1.0"
+
 // 全局状态：离线注册表（懒加载）
 var (
 	xmlPath     string
@@ -40,8 +43,14 @@ func main() {
 		transport = flag.String("transport", "stdio", "传输方式: stdio 或 http")
 		addr      = flag.String("addr", ":8080", "HTTP 模式监听地址")
 		xml       = flag.String("xml", "", "CWE XML 目录文件路径（离线工具需要）")
+		showVer   = flag.Bool("version", false, "显示版本信息并退出")
 	)
 	flag.Parse()
+
+	if *showVer {
+		fmt.Printf("cwe-mcp: %s\nsdk: %s\n", mcpVersion, cweskills.Version)
+		return
+	}
 
 	xmlPath = *xml
 
@@ -54,7 +63,7 @@ func main() {
 
 	s := server.NewMCPServer(
 		"cwe-skills-mcp",
-		"0.1.0",
+		mcpVersion,
 		server.WithToolCapabilities(true),
 	)
 
@@ -62,6 +71,7 @@ func main() {
 	registerWellknownTools(s)
 	registerAPITools(s)
 	registerOfflineTools(s)
+	registerExtraTools(s)
 
 	switch *transport {
 	case "stdio":

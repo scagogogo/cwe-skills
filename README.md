@@ -343,7 +343,7 @@ cwe wellknown check CWE-79 -o json
 
 ## 4. MCP
 
-The `cwe-mcp` server exposes 15 tools (parse, validate, extract, get_weakness, get_ancestors, build_tree, search_keyword, etc.) over stdio/SSE for MCP-compatible AI tools like Claude Desktop.
+The `cwe-mcp` server exposes 20 tools (parse, validate, extract, format, get_weakness, get_ancestors, get_children, get_siblings, build_tree, search_keyword, filter_cwes, etc.) over stdio/SSE for MCP-compatible AI tools like Claude Desktop.
 
 ```bash
 # Build

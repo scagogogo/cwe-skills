@@ -76,6 +76,7 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
+      - -X main.mcpVersion={{.Version}}
     targets:
       - linux_amd64
       - linux_arm64

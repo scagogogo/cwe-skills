@@ -96,11 +96,11 @@ cwe parse CWE-79 -o json   # 脚本友好
 
 ## 🌐 4. MCP — AI 工具协议接入
 
-MCP（Model Context Protocol）是 AI 工具调用的标准化协议。CWE Skills 提供官方 MCP 服务器 `cwe-mcp`，暴露 15 个工具，让任何 MCP 兼容的 AI 工具能以「工具调用」方式访问 CWE 能力，无需 AI 自己跑 Shell 命令。
+MCP（Model Context Protocol）是 AI 工具调用的标准化协议。CWE Skills 提供官方 MCP 服务器 `cwe-mcp`，暴露 20 个工具，让任何 MCP 兼容的 AI 工具能以「工具调用」方式访问 CWE 能力，无需 AI 自己跑 Shell 命令。
 
 **最适合**：MCP 兼容的 AI 工具生态（Claude Desktop、Cursor 等），需要标准化工具调用而非裸 CLI 的场景，沙箱/受限环境。
 
-- 状态：<Badge type="tip" text="可用" /> <Badge type="info" text="15 个工具" />
+- 状态：<Badge type="tip" text="可用" /> <Badge type="info" text="20 个工具" />
 - 安装与工具清单见 [MCP 接入](./integration-mcp)
 
 ---

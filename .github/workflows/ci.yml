@@ -79,3 +79,35 @@ jobs:
           ./cwe-cli format 79 89 352
           ./cwe-cli wellknown top25
           ./cwe-cli enum abstraction
+
+  build-mcp:
+    name: Build MCP Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Build MCP Server
+        run: go build -o cwe-mcp ./cmd/cwe-mcp/
+
+      - name: Test MCP Server
+        run: |
+          ./cwe-mcp --version
+          # 验证 stdio 握手与工具列表
+          echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}' | ./cwe-mcp > init.json
+          grep -q '"serverInfo"' init.json
+          (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
+           echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
+           echo '{"jsonrpc":"2.0","id":2,"method":"tools/list"}') | ./cwe-mcp > tools.json
+          # 工具列表应至少含 15 个工具
+          grep -o '"name":"[a-z_]*"' tools.json | wc -l
+          # 测试一个工具调用
+          (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
+           echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
+           echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"parse_cwe_id","arguments":{"id":"CWE-79"}}}') | ./cwe-mcp > call.json
+          grep -q '"format":"CWE-79"' call.json

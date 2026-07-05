@@ -342,7 +342,7 @@ cwe wellknown check CWE-79 -o json
 
 ## 4. MCP
 
-`cwe-mcp` 服务器通过 stdio/SSE 暴露 15 个工具（parse、validate、extract、get_weakness、get_ancestors、build_tree、search_keyword 等），供 Claude Desktop 等 MCP 兼容 AI 工具调用。
+`cwe-mcp` 服务器通过 stdio/SSE 暴露 20 个工具（parse、validate、extract、format、get_weakness、get_ancestors、get_children、get_siblings、build_tree、search_keyword、filter_cwes 等），供 Claude Desktop 等 MCP 兼容 AI 工具调用。
 
 ```bash
 # 构建
