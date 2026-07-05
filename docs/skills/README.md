@@ -143,3 +143,41 @@ registry.BuildIndexes()
 
 cweskills.IsInTop25(79) // true
 ```
+
+## MCP Server — Alternative to CLI
+
+If your AI agent runs in a sandbox (no shell access) or you prefer structured tool calls over CLI text parsing, use the MCP server instead of the CLI.
+
+The `cwe-mcp` server exposes **20 tools** (parse, validate, extract, get_weakness, get_ancestors, build_tree, search_keyword, filter_cwes, etc.) over stdio/SSE for MCP-compatible clients like Claude Desktop.
+
+```bash
+# Build & run
+go build -o cwe-mcp ./cmd/cwe-mcp/
+./cwe-mcp --xml cwec_v4.15.xml              # stdio (local clients)
+./cwe-mcp --transport http --addr :8080      # SSE (remote)
+```
+
+Configure Claude Desktop (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "cwe-skills": {
+      "command": "/path/to/cwe-mcp",
+      "args": ["--xml", "/path/to/cwec_v4.15.xml"]
+    }
+  }
+}
+```
+
+→ Full MCP guide: https://scagogogo.github.io/cwe-skills/guide/integration-mcp
+
+### Skills (CLI) vs MCP — which to use?
+
+| Scenario | Use |
+|----------|-----|
+| AI can run shell, want zero infra | **Skills** (CLI prompt) |
+| AI in sandbox, no shell | **MCP** (tool calls) |
+| Need structured JSON + schema | **MCP** |
+| Claude Desktop / Cursor integration | **MCP** |
+| Shell scripts / CI pipelines | **CLI** directly |
+

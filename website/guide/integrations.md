@@ -117,7 +117,7 @@ flowchart TD
     Q3 -- 是 --> CLI["💻 CLI\n二进制，text/JSON"]
     Q3 -- 否 --> Q4{"快速手动查询？"}
     Q4 -- 是 --> CLI2["💻 CLI\n下载即用"]
-    Q4 -- 否 --> MCP["🌐 MCP\n规划中，暂用 Skills/CLI 替代"]
+    Q4 -- 否 --> MCP["🌐 MCP\n20 个工具，沙箱/受限环境"]
 
     classDef decision fill:#fef9c3,stroke:#ca8a04,color:#854d0e
     classDef local fill:#dcfce7,stroke:#16a34a,color:#166534

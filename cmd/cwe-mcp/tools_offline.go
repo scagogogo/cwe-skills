@@ -117,7 +117,7 @@ func registerOfflineTools(s *server.MCPServer) {
 			}
 			return wrapJSON(map[string]any{
 				"root":      cweskills.FormatCWEIDFromInt(root),
-				"tree":      tree,
+				"tree":      serializeTreeNode(tree),
 				"count":     tree.Count(),
 				"max_depth": tree.MaxDepth(),
 			})
@@ -162,4 +162,23 @@ func registerOfflineTools(s *server.MCPServer) {
 			})
 		},
 	)
+}
+
+// serializeTreeNode 把 TreeNode 转成可 JSON 序列化的嵌套结构。
+// TreeNode.Parent 是反向指针，直接序列化会触发循环引用导致栈溢出，
+// 因此这里只保留 CWE 内容与 Children 子树（丢弃 Parent）。
+func serializeTreeNode(node *cweskills.TreeNode) map[string]any {
+	if node == nil {
+		return nil
+	}
+	children := make([]map[string]any, 0, len(node.Children))
+	for _, c := range node.Children {
+		children = append(children, serializeTreeNode(c))
+	}
+	return map[string]any{
+		"id":       cweskills.FormatCWEIDFromInt(node.CWE.ID),
+		"name":     node.CWE.Name,
+		"depth":    node.Depth,
+		"children": children,
+	}
 }

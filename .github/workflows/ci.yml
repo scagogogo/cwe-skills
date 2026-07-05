@@ -104,10 +104,26 @@ jobs:
           (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
            echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
            echo '{"jsonrpc":"2.0","id":2,"method":"tools/list"}') | ./cwe-mcp > tools.json
-          # 工具列表应至少含 15 个工具
-          grep -o '"name":"[a-z_]*"' tools.json | wc -l
-          # 测试一个工具调用
+          # 工具列表应有 20 个工具
+          TOOL_COUNT=$(grep -o '"name":"[a-z_]*"' tools.json | wc -l)
+          echo "tool count: $TOOL_COUNT"
+          test "$TOOL_COUNT" -eq 20
+          # 测试在线工具调用（纯本地，无需 XML）
           (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
            echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
            echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"parse_cwe_id","arguments":{"id":"CWE-79"}}}') | ./cwe-mcp > call.json
-          grep -q '"format":"CWE-79"' call.json
+          grep -q 'CWE-79' call.json
+          grep -q 'valid' call.json
+          # 测试离线工具调用（需 XML 目录，回归 build_tree 循环引用 bug）
+          (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
+           echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
+           echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"build_tree","arguments":{"root":"CWE-74"}}}') | ./cwe-mcp --xml testdata/sample_cwe_catalog.xml > tree.json
+          # 结果在 JSON 字符串里被转义，匹配字段名即可
+          grep -q 'max_depth' tree.json
+          grep -q 'CWE-74' tree.json
+          grep -q 'Injection' tree.json
+          # 离线搜索
+          (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
+           echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
+           echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_keyword","arguments":{"keyword":"Injection"}}}') | ./cwe-mcp --xml testdata/sample_cwe_catalog.xml > search.json
+          grep -q 'SQL Injection' search.json

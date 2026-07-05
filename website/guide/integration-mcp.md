@@ -23,7 +23,7 @@ MCP（Model Context Protocol）是一个开放协议，为 AI 应用与外部数
 flowchart TB
     CLIENT["AI 应用\nClaude Desktop / Cursor / 任意 MCP 客户端"]
     PROTO["MCP 协议\nJSON-RPC over stdio / SSE"]
-    SERVER["cwe-mcp 服务器\n15 个工具"]
+    SERVER["cwe-mcp 服务器\n20 个工具"]
     SDK["cweskills 包\n在线 API + 离线 XML + 注册表 + 导航"]
 
     CLIENT --> PROTO --> SERVER --> SDK
@@ -88,7 +88,7 @@ go build -o cwe-mcp ./cmd/cwe-mcp/
 }
 ```
 
-重启 Claude Desktop 后，AI 即可自动发现并调用 15 个 CWE 工具。
+重启 Claude Desktop 后，AI 即可自动发现并调用 20 个 CWE 工具。
 
 ---
 
@@ -153,7 +153,7 @@ sequenceDiagram
     participant XML as 本地 XML
 
     AI->>MCP: tools/list
-    MCP-->>AI: 15 个工具 + schema
+    MCP-->>AI: 20 个工具 + schema
 
     AI->>MCP: tools/call get_weakness(CWE-79)
     MCP->>SDK: GetWeakness(79)
