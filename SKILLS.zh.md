@@ -121,3 +121,17 @@ cweskills.IsInTop25(79)  // true
 client := cweskills.NewAPIClient()
 weakness, _ := client.GetWeakness(ctx, 79)
 ```
+
+## MCP 服务器（沙箱 / 无 Shell 环境）
+
+若你无法执行 Shell 命令（沙箱、受限运行时），改用 MCP 服务器替代 CLI。它以**结构化工具调用**方式暴露同样的能力（无需解析文本输出）。
+
+```bash
+go build -o cwe-mcp ./cmd/cwe-mcp/
+./cwe-mcp --xml cwec_v4.15.xml          # stdio（本地客户端）
+./cwe-mcp --transport http --addr :8080  # SSE（远程）
+```
+
+服务器暴露 **20 个工具**（parse_cwe_id、validate_cwe_id、format_cwe_id、extract_cwe_ids、compare_cwe_ids、check_wellknown、get_owasp_categories、get_weakness、get_parents、api_version、get_ancestors、get_descendants、get_children、get_siblings、get_shortest_path、is_ancestor、build_tree、search_keyword、filter_cwes、registry_stats）。每个工具接收结构化 JSON 参数、返回结构化 JSON——无需字符串解析。
+
+→ 完整指南：https://scagogogo.github.io/cwe-skills/guide/integration-mcp

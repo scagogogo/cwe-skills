@@ -121,3 +121,17 @@ cweskills.IsInTop25(79)  // true
 client := cweskills.NewAPIClient()
 weakness, _ := client.GetWeakness(ctx, 79)
 ```
+
+## MCP Server (sandboxed / no-shell environments)
+
+If you cannot run shell commands (sandbox, restricted runtime), use the MCP server instead of the CLI. It exposes the same capabilities as **structured tool calls** (no text parsing).
+
+```bash
+go build -o cwe-mcp ./cmd/cwe-mcp/
+./cwe-mcp --xml cwec_v4.15.xml          # stdio (local clients)
+./cwe-mcp --transport http --addr :8080  # SSE (remote)
+```
+
+The server exposes **20 tools** (parse_cwe_id, validate_cwe_id, format_cwe_id, extract_cwe_ids, compare_cwe_ids, check_wellknown, get_owasp_categories, get_weakness, get_parents, api_version, get_ancestors, get_descendants, get_children, get_siblings, get_shortest_path, is_ancestor, build_tree, search_keyword, filter_cwes, registry_stats). Each takes structured JSON arguments and returns structured JSON — no string parsing needed.
+
+→ Full guide: https://scagogogo.github.io/cwe-skills/guide/integration-mcp

@@ -86,11 +86,17 @@ func registerOfflineTools(s *server.MCPServer) {
 			}
 			nav := cweskills.NewNavigator(reg)
 			path := nav.ShortestPath(from, to)
+			// hops = 边数 = 节点数 - 1；path 为空或单点时无路径
+			hops := 0
+			if len(path) > 1 {
+				hops = len(path) - 1
+			}
 			return wrapJSON(map[string]any{
 				"from":     cweskills.FormatCWEIDFromInt(from),
 				"to":       cweskills.FormatCWEIDFromInt(to),
 				"path":     path,
-				"hops":     len(path),
+				"hops":     hops,
+				"found":    len(path) > 1,
 			})
 		},
 	)
