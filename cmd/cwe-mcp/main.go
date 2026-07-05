@@ -56,9 +56,11 @@ func main() {
 
 	// 预加载 XML（若指定）—— 失败不退出，离线工具调用时报错
 	if *xml != "" {
+		registryMu.Lock()
 		if err := loadRegistry(); err != nil {
 			log.Printf("警告: 加载 XML 失败，离线工具将不可用: %v", err)
 		}
+		registryMu.Unlock()
 	}
 
 	s := server.NewMCPServer(
@@ -89,11 +91,9 @@ func main() {
 	}
 }
 
-// loadRegistry 懒加载并构建 XML 注册表索引（线程安全）。
+// loadRegistry 懒加载并构建 XML 注册表索引。
+// 调用方必须持有 registryMu（内部不再加锁，避免重入死锁）。
 func loadRegistry() error {
-	registryMu.Lock()
-	defer registryMu.Unlock()
-
 	if registry != nil || registryErr != nil {
 		return registryErr
 	}
@@ -118,22 +118,22 @@ func loadRegistry() error {
 	return nil
 }
 
-// mustRegistry 取已加载的注册表，未加载则返回错误给 MCP 客户端。
+// mustRegistry 取已加载的注册表，未加载则触发懒加载。
+// 加锁保证并发安全：避免多个工具调用同时看到 registry==nil 而重复加载。
 func mustRegistry() (*cweskills.Registry, error) {
-	if registry != nil {
-		return registry, nil
-	}
+	registryMu.Lock()
+	defer registryMu.Unlock()
 	if err := loadRegistry(); err != nil {
 		return nil, err
 	}
 	return registry, nil
 }
 
-// jsonRaw 把任意值编码为 json.RawMessage，失败时返回错误 JSON。
+// jsonRaw 把任意值编码为 json.RawMessage，失败时返回带类型信息的错误 JSON。
 func jsonRaw(v any) json.RawMessage {
 	b, err := json.Marshal(v)
 	if err != nil {
-		return json.RawMessage(`{"error":"json marshal failed"}`)
+		return json.RawMessage(fmt.Sprintf(`{"error":"json marshal failed","type":"%T","reason":"%s"}`, v, err.Error()))
 	}
 	return b
 }
