@@ -23,7 +23,10 @@ func registerOfflineTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			idStr, _ := req.Params.Arguments["id"].(string)
+			idStr, ok := requireStringArg(req, "id")
+			if !ok {
+				return errResult("missing or invalid 'id'"), nil
+			}
 			id, err := cweskills.ParseCWEID(idStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
@@ -48,7 +51,10 @@ func registerOfflineTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			idStr, _ := req.Params.Arguments["id"].(string)
+			idStr, ok := requireStringArg(req, "id")
+			if !ok {
+				return errResult("missing or invalid 'id'"), nil
+			}
 			id, err := cweskills.ParseCWEID(idStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
@@ -74,8 +80,14 @@ func registerOfflineTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			fromStr, _ := req.Params.Arguments["from"].(string)
-			toStr, _ := req.Params.Arguments["to"].(string)
+			fromStr, ok := requireStringArg(req, "from")
+			if !ok {
+				return errResult("missing or invalid 'from'"), nil
+			}
+			toStr, ok := requireStringArg(req, "to")
+			if !ok {
+				return errResult("missing or invalid 'to'"), nil
+			}
 			from, err := cweskills.ParseCWEID(fromStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid 'from': %v", err)), nil
@@ -112,7 +124,10 @@ func registerOfflineTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			rootStr, _ := req.Params.Arguments["root"].(string)
+			rootStr, ok := requireStringArg(req, "root")
+			if !ok {
+				return errResult("missing or invalid 'root'"), nil
+			}
 			root, err := cweskills.ParseCWEID(rootStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid 'root': %v", err)), nil
@@ -141,7 +156,10 @@ func registerOfflineTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			keyword, _ := req.Params.Arguments["keyword"].(string)
+			keyword, ok := requireStringArg(req, "keyword")
+			if !ok {
+				return errResult("missing or invalid 'keyword'"), nil
+			}
 			results := cweskills.FindByKeyword(reg, keyword)
 			return wrapJSON(map[string]any{
 				"keyword": keyword,

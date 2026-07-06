@@ -82,8 +82,14 @@ func registerIDTools(s *server.MCPServer) {
 			mcp.WithString("b", mcp.Required(), mcp.Description("Second CWE ID")),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			a, _ := req.Params.Arguments["a"].(string)
-			b, _ := req.Params.Arguments["b"].(string)
+			a, ok := requireStringArg(req, "a")
+			if !ok {
+				return errResult("missing or invalid 'a'"), nil
+			}
+			b, ok := requireStringArg(req, "b")
+			if !ok {
+				return errResult("missing or invalid 'b'"), nil
+			}
 			cmp, err := cweskills.CompareCWEIDs(a, b)
 			if err != nil {
 				return errResult(fmt.Sprintf("compare failed: %v", err)), nil
@@ -104,4 +110,15 @@ func errMsg(err error) string {
 		return ""
 	}
 	return err.Error()
+}
+
+// requireStringArg 从工具参数中提取必填字符串字段。
+// 返回 (value, ok)——ok 为 false 时 caller 应返回 errResult 提示参数缺失/类型错误。
+// 相比裸 .(string)，它能区分"缺失"与"类型错误"，给 AI 更精准的报错。
+func requireStringArg(req mcp.CallToolRequest, key string) (string, bool) {
+	v, ok := req.Params.Arguments[key].(string)
+	if !ok || v == "" {
+		return "", false
+	}
+	return v, true
 }

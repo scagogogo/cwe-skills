@@ -45,7 +45,10 @@ func registerExtraTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			idStr, _ := req.Params.Arguments["id"].(string)
+			idStr, ok := requireStringArg(req, "id")
+			if !ok {
+				return errResult("missing or invalid 'id'"), nil
+			}
 			id, err := cweskills.ParseCWEID(idStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
@@ -70,7 +73,10 @@ func registerExtraTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			idStr, _ := req.Params.Arguments["id"].(string)
+			idStr, ok := requireStringArg(req, "id")
+			if !ok {
+				return errResult("missing or invalid 'id'"), nil
+			}
 			id, err := cweskills.ParseCWEID(idStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
@@ -125,8 +131,14 @@ func registerExtraTools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(err.Error()), nil
 			}
-			ancStr, _ := req.Params.Arguments["ancestor"].(string)
-			descStr, _ := req.Params.Arguments["descendant"].(string)
+			ancStr, ok := requireStringArg(req, "ancestor")
+			if !ok {
+				return errResult("missing or invalid 'ancestor'"), nil
+			}
+			descStr, ok := requireStringArg(req, "descendant")
+			if !ok {
+				return errResult("missing or invalid 'descendant'"), nil
+			}
 			anc, err := cweskills.ParseCWEID(ancStr)
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid 'ancestor': %v", err)), nil
