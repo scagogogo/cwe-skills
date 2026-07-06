@@ -93,8 +93,7 @@ func registerExtraTools(s *server.MCPServer) {
 	// filter_cwes —— 离线多条件过滤
 	s.AddTool(
 		mcp.NewTool("filter_cwes",
-			mcp.WithDescription("Filter CWEs in the offline XML registry by abstraction and/or status (requires --xml). Returns matching CWE list. Use search_keyword for keyword matching; this tool is for structured attribute filtering."),
-			mcp.WithString("id", mcp.Description("CWE ID to filter (optional)")),
+			mcp.WithDescription("Filter CWEs in the offline XML registry by abstraction and/or status (requires --xml). Returns matching CWE list. Use search_keyword for keyword matching; this tool is for structured attribute filtering. For a specific CWE by ID, use get_weakness."),
 			mcp.WithString("abstraction", mcp.Description("Abstraction level: Pillar, Class, Base, Variant (optional)")),
 			mcp.WithString("status", mcp.Description("Status: Stable, Usable, Draft, Incomplete, Obsolete, Deprecated (optional)")),
 		),
