@@ -58,6 +58,8 @@ CWE (Common Weakness Enumeration) is a community-developed list of software weak
 | `cwe tree path CWE-79 --xml <file>` | Find path from root |
 | `cwe tree leaves CWE-1 --xml <file>` | List all leaf weaknesses |
 
+> `cwe nav` has 17 subcommands total — also `can-also-be`, `chain-members`, `composite-members`, `follow`, `is-related`, `precede`, `requires`, `required-by` for the other CWE relationship types. Run `cwe nav --help` to see all. `cwe tree view` builds a view-scoped tree; `cwe registry` has 15 subcommands for category/view membership.
+
 ## Output Format
 
 All commands support `-o json` for structured JSON output. **Always prefer `-o json`** when you need to parse the result — JSON fields are stable across versions, while text output formatting may change.
