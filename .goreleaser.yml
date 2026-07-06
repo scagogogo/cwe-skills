@@ -87,6 +87,8 @@ builds:
 
 archives:
   - id: cwe-archive
+    builds:
+      - cwe
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -106,6 +108,23 @@ archives:
       - README.zh.md
       - LICENSE
       - docs/**
+  - id: cwe-mcp-archive
+    builds:
+      - cwe-mcp
+    name_template: >-
+      {{ .ProjectName }}-mcp_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm64" }}aarch64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
 
 checksum:
   name_template: checksums.txt
@@ -142,6 +161,8 @@ release:
 nfpms:
   - id: cwe-packages
     package_name: cwe-skills
+    builds:
+      - cwe
     file_name_template: "{{ .ConventionalFileName }}"
     homepage: https://github.com/scagogogo/cwe-skills
     description: CWE (Common Weakness Enumeration) CLI tool and SDK
@@ -156,6 +177,8 @@ nfpms:
 
 brews:
   - name: cwe-skills
+    ids:
+      - cwe-archive
     homepage: https://github.com/scagogogo/cwe-skills
     description: CWE (Common Weakness Enumeration) CLI tool and SDK
     license: MIT
@@ -171,10 +194,12 @@ brews:
     install: |
       bin.install "cwe"
 
-scoop:
-  bucket:
-    owner: scagogogo
-    name: scoop-bucket
-  homepage: https://github.com/scagogogo/cwe-skills
-  description: CWE (Common Weakness Enumeration) CLI tool and SDK
-  license: MIT
+scoops:
+  - repository:
+      owner: scagogogo
+      name: scoop-bucket
+    ids:
+      - cwe-archive
+    homepage: https://github.com/scagogogo/cwe-skills
+    description: CWE (Common Weakness Enumeration) CLI tool and SDK
+    license: MIT
