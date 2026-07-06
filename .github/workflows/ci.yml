@@ -133,3 +133,8 @@ jobs:
            echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_weakness","arguments":{"id":"CWE-79"}}}') | ./cwe-mcp --xml testdata/sample_cwe_catalog.xml > weakness.json
           # 无论在线（source:online）还是离线回退（source:offline），都应返回 CWE-79 数据
           grep -q 'Cross-site Scripting' weakness.json
+          # get_parents 离线回退：API 不可达时回退到 XML 注册表，返回父级 CWE-74
+          (echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"1.0"}}}'; \
+           echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'; \
+           echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_parents","arguments":{"id":"CWE-79"}}}') | ./cwe-mcp --xml testdata/sample_cwe_catalog.xml > parents.json
+          grep -q 'Injection' parents.json

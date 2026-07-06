@@ -118,7 +118,7 @@ MCP 服务器暴露 20 个工具，与 CLI 子命令一一对应：
 | 工具 | 对应 CLI | 能力 |
 |------|----------|------|
 | `get_weakness` | `cwe show` | 在线取弱点详情，API 不可达时回退到离线 XML |
-| `get_parents` | `cwe relations parents` | 在线父级关系 |
+| `get_parents` | `cwe relations parents` | 在线父级关系，API 不可达时回退到离线 XML |
 | `api_version` | `cwe api-version` | MITRE API 版本 |
 
 ### 📥 离线 XML 工具（需 `--xml`）
