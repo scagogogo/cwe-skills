@@ -45,6 +45,16 @@ func main() {
 		xml       = flag.String("xml", "", "CWE XML 目录文件路径（离线工具需要）")
 		showVer   = flag.Bool("version", false, "显示版本信息并退出")
 	)
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "cwe-mcp — CWE Skills MCP 服务器（暴露 20 个 CWE 工具，供 MCP 兼容 AI 客户端调用）\n\n")
+		fmt.Fprintf(os.Stderr, "用法:\n")
+		fmt.Fprintf(os.Stderr, "  cwe-mcp                              stdio 模式，仅在线工具（无需 XML）\n")
+		fmt.Fprintf(os.Stderr, "  cwe-mcp --xml cwec_v4.15.xml         stdio 模式，含离线工具\n")
+		fmt.Fprintf(os.Stderr, "  cwe-mcp --transport http --addr :8080  SSE 模式（远程）\n")
+		fmt.Fprintf(os.Stderr, "  cwe-mcp --version                    显示版本并退出\n\n")
+		fmt.Fprintf(os.Stderr, "参数:\n")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
 	if *showVer {
