@@ -29,7 +29,6 @@ builds:
       - linux_mipsle
       - linux_mips64
       - linux_mips64le
-      - linux_ppc64
       - linux_ppc64le
       - linux_s390x
       - linux_riscv64
@@ -60,8 +59,6 @@ builds:
       - openbsd_386
       - openbsd_arm64
       - openbsd_arm_7
-      # AIX
-      - aix_ppc64
       # Illumos
       - illumos_amd64
       # Solaris
@@ -164,7 +161,9 @@ nfpms:
     builds:
       - cwe
     # 不用 ConventionalFileName：它把 arm6/arm7 都映射成 armhf，
-    # 导致 deb 同名资产上传冲突（422 already_exists）。改用带 arm 版本号的命名。
+    # 导致 deb 同名资产上传冲突（422 already_exists）。改用带 arm/mips 版本号的命名。
+    # 注意：大端 ppc64 与 aix_ppc64 已从 builds.targets 移除——goreleaser v2.17+ 会把它们
+    # 拆成 *_power8 变体，.Arch 都归一化为 ppc64，导致同名 .rpm 碰撞（404）。保留 ppc64le。
     file_name_template: >-
       {{ .PackageName }}_
       {{- .Version }}_
