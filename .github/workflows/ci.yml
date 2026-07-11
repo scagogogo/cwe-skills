@@ -32,6 +32,24 @@ jobs:
       - name: Test with Race
         run: go test -race -count=1 -coverprofile=coverage.out ./...
 
+      - name: Coverage Gate
+        run: |
+          set -e
+          # 整体覆盖率门禁（含 cmd/* 的不可测 main/os.Exit 分支，故阈值留缓冲）
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {print $3}' | tr -d '%')
+          echo "Total coverage: ${total}%"
+          if awk -v t="$total" 'BEGIN{exit !(t < 95)}'; then
+            echo "::error::Total coverage ${total}% is below the 95% gate"
+            exit 1
+          fi
+          # SDK 核心包（无不可测分支）单独设高门禁
+          sdk=$(go test -count=1 -coverprofile=/tmp/sdk.out . 2>/dev/null | grep -oE 'coverage: [0-9.]+%' | head -1 | grep -oE '[0-9.]+')
+          echo "SDK coverage: ${sdk}%"
+          if awk -v t="$sdk" 'BEGIN{exit !(t < 99)}'; then
+            echo "::error::SDK coverage ${sdk}% is below the 99% gate"
+            exit 1
+          fi
+
       - name: Upload Coverage
         uses: actions/upload-artifact@v4
         with:
