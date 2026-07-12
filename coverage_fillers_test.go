@@ -7,12 +7,17 @@ package cweskills
 // 接受不覆盖：serializer.go:82 (xml.MarshalIndent 对 safeCWE 永不失败)、
 // :166/:181/:187 (csv.Writer.Write/Flush 对 bytes.Buffer 永不失败)、
 // :220 (bytes.Reader.Read 永不返回非 EOF 错误)。
-// api_client_relations.go:124-129 不可达——[]Relationship 与 rawRelations
-// 字段标签完全一致，首次 unmarshal 成功则直接返回，失败则两者都失败。
+//
+// api_client_relations.go 的 getRelations fallback 分支（行 124-129）
+// 实际可达：Relationship 比 fallback struct 多 Ordinal(string)/ChainID(int)
+// 字段，传入 ordinal 为数字值时 []Relationship 解析失败（类型不匹配），
+// 但 fallback struct 无 ordinal 字段会忽略该字段从而解析成功。
+// 见 TestGetRelations_FallbackObjectArray。
 
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -920,5 +925,81 @@ func TestPostForm_ClientDoError(t *testing.T) {
 	err := c.PostForm(context.Background(), "/path", url.Values{"k": {"v"}}, nil)
 	if err == nil {
 		t.Fatal("expected client.Do error, got nil")
+	}
+}
+
+// ==================== api_client_relations.go: getRelations 分支 ====================
+
+// TestGetRelations_HTTPError 覆盖 getRelations 的 httpClient.Get err 分支（行 109）
+func TestGetRelations_HTTPError(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "boom", http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	client := NewAPIClient(WithAPIBaseURL(srv.URL), WithAPIRateLimit(1000, 1000))
+	defer client.Close()
+
+	_, err := client.GetParents(context.Background(), 79)
+	if err == nil {
+		t.Fatal("GetParents with 500 should error")
+	}
+}
+
+// TestGetRelations_FallbackObjectArray 覆盖 json.Unmarshal 失败后 fallback 成功分支（行 121、124-134）
+//
+// Relationship.Ordinal 为 string 类型；body 中 ordinal 传数字值 123，
+// 导致 []Relationship 解析失败（类型不匹配）→ 进入 fallback。
+// fallback struct 无 ordinal 字段会忽略该字段，从而解析成功。
+// 第二条 nature 传无效值 "BogusNature"，使 ParseRelationshipNature 返回错误，
+// 覆盖行 127 的 nature = RelationshipNature(r.Nature) fallback 赋值分支。
+func TestGetRelations_FallbackObjectArray(t *testing.T) {
+	body := `[{"nature":"ChildOf","cweId":100,"ordinal":123},{"nature":"BogusNature","cweId":200,"ordinal":456}]`
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"Data":`+body+`}`)
+	}))
+	defer srv.Close()
+
+	client := NewAPIClient(WithAPIBaseURL(srv.URL), WithAPIRateLimit(1000, 1000))
+	defer client.Close()
+
+	rel, err := client.GetParents(context.Background(), 79)
+	if err != nil {
+		t.Fatalf("GetParents fallback should succeed: %v", err)
+	}
+	// 注意：Go encoding/json 在 Unmarshal 报错时仍会部分填充 slice，
+	// 因此第一段 []Relationship 虽失败（ordinal 数字无法填入 string 字段），
+	// 却已把 2 条填入 relations；随后 fallback 循环再 append 2 条，共 4 条。
+	// 此处断言真实行为以确保测试稳定（生产代码该行为不在本任务修改范围）。
+	if len(rel) != 4 {
+		t.Fatalf("expected 4 relations (2 partial + 2 fallback), got %d", len(rel))
+	}
+	if rel[2].CWEID != 100 || rel[3].CWEID != 200 {
+		t.Errorf("unexpected fallback cwe ids: %+v", rel)
+	}
+	// 第一条 nature 有效 → 走 ParseRelationshipNature 成功分支
+	if rel[2].Nature != RelationshipChildOf {
+		t.Errorf("unexpected nature[2]: %v", rel[2].Nature)
+	}
+	// 第二条 nature 无效 → ParseRelationshipNature 失败 → 行 127 原样赋值
+	if rel[3].Nature != RelationshipNature("BogusNature") {
+		t.Errorf("unexpected nature[3]: %v", rel[3].Nature)
+	}
+}
+
+// TestGetRelations_FallbackAlsoFails 覆盖两段解析都失败的分支（行 122）
+func TestGetRelations_FallbackAlsoFails(t *testing.T) {
+	// Data 是非数组 JSON，两段 Unmarshal 都失败
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"Data":"not-an-array"}`)
+	}))
+	defer srv.Close()
+
+	client := NewAPIClient(WithAPIBaseURL(srv.URL), WithAPIRateLimit(1000, 1000))
+	defer client.Close()
+
+	_, err := client.GetParents(context.Background(), 79)
+	if err == nil {
+		t.Fatal("GetParents with non-array data should error")
 	}
 }
