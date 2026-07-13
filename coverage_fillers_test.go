@@ -5,8 +5,10 @@ package cweskills
 //
 // 注：以下分支因实现使用 bytes.Buffer/csv.Writer（永不返回错误）而不可达，
 // 接受不覆盖：serializer.go:82 (xml.MarshalIndent 对 safeCWE 永不失败)、
-// :166/:181/:187 (csv.Writer.Write/Flush 对 bytes.Buffer 永不失败)、
-// :220 (bytes.Reader.Read 永不返回非 EOF 错误)。
+// :166/:181/:187 (csv.Writer.Write/Flush 对 bytes.Buffer 永不失败)。
+// serializer.go:220 在 UnmarshalCSV 中是 csv.Reader.Read（非 bytes.Reader），
+// 对格式错误的数据行（如未闭合引号）会返回非 EOF 错误，可达，见
+// TestUnmarshalCSV_DataRowReadError。
 //
 // api_client_relations.go 的 getRelations fallback 分支（行 124-129）
 // 实际可达：Relationship 比 fallback struct 多 Ordinal(string)/ChainID(int)
@@ -1002,5 +1004,16 @@ func TestGetRelations_FallbackAlsoFails(t *testing.T) {
 	_, err := client.GetParents(context.Background(), 79)
 	if err == nil {
 		t.Fatal("GetParents with non-array data should error")
+	}
+}
+
+// TestUnmarshalCSV_DataRowReadError 覆盖 reader.Read 返回非 EOF 错误的分支
+// （serializer.go 行 220-221）。构造合法表头 + 数据行含裸引号，
+// csv.Reader.Read 在该数据行报错（bare " in non-quoted-field，非 EOF）。
+func TestUnmarshalCSV_DataRowReadError(t *testing.T) {
+	data := []byte("ID,Name\n79,unterminated\"field")
+	_, err := UnmarshalCSV(data)
+	if err == nil {
+		t.Fatal("UnmarshalCSV with malformed data row should error")
 	}
 }
