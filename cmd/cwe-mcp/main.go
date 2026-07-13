@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"sync"
@@ -30,6 +31,9 @@ import (
 // mcpVersion 是 MCP 服务器自身版本（独立于 SDK 版本）。
 var mcpVersion = "0.1.0"
 
+// osStderr 默认指向 os.Stderr，测试可替换为任意 io.Writer 以捕获输出。
+var osStderr io.Writer = os.Stderr
+
 // 全局状态：离线注册表（懒加载）
 var (
 	xmlPath     string
@@ -39,32 +43,39 @@ var (
 )
 
 func main() {
-	var (
-		transport = flag.String("transport", "stdio", "传输方式: stdio 或 http")
-		addr      = flag.String("addr", ":8080", "HTTP 模式监听地址")
-		xml       = flag.String("xml", "", "CWE XML 目录文件路径（离线工具需要）")
-		showVer   = flag.Bool("version", false, "显示版本信息并退出")
-	)
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "cwe-mcp — CWE Skills MCP 服务器（暴露 20 个 CWE 工具，供 MCP 兼容 AI 客户端调用）\n\n")
-		fmt.Fprintf(os.Stderr, "用法:\n")
-		fmt.Fprintf(os.Stderr, "  cwe-mcp                              stdio 模式，仅在线工具（无需 XML）\n")
-		fmt.Fprintf(os.Stderr, "  cwe-mcp --xml cwec_v4.15.xml         stdio 模式，含离线工具\n")
-		fmt.Fprintf(os.Stderr, "  cwe-mcp --transport http --addr :8080  SSE 模式（远程）\n")
-		fmt.Fprintf(os.Stderr, "  cwe-mcp --version                    显示版本并退出\n\n")
-		fmt.Fprintf(os.Stderr, "参数:\n")
-		flag.PrintDefaults()
+	os.Exit(runMain(os.Args[1:]))
+}
+
+// runMain 解析参数并按 transport 启动服务器，返回进程退出码。
+// 提取自 main 以便测试覆盖 flag 解析与 --version / 未知 transport 分支，
+// 而不触发 os.Exit（main 调用方负责 os.Exit）。
+func runMain(args []string) int {
+	fs := flag.NewFlagSet("cwe-mcp", flag.ContinueOnError)
+	transport := fs.String("transport", "stdio", "传输方式: stdio 或 http")
+	addr := fs.String("addr", ":8080", "HTTP 模式监听地址")
+	xml := fs.String("xml", "", "CWE XML 目录文件路径（离线工具需要）")
+	showVer := fs.Bool("version", false, "显示版本信息并退出")
+	fs.Usage = func() {
+		fmt.Fprintf(osStderr, "cwe-mcp — CWE Skills MCP 服务器（暴露 20 个 CWE 工具，供 MCP 兼容 AI 客户端调用）\n\n")
+		fmt.Fprintf(osStderr, "用法:\n")
+		fmt.Fprintf(osStderr, "  cwe-mcp                              stdio 模式，仅在线工具（无需 XML）\n")
+		fmt.Fprintf(osStderr, "  cwe-mcp --xml cwec_v4.15.xml         stdio 模式，含离线工具\n")
+		fmt.Fprintf(osStderr, "  cwe-mcp --transport http --addr :8080  SSE 模式（远程）\n")
+		fmt.Fprintf(osStderr, "  cwe-mcp --version                    显示版本并退出\n\n")
+		fmt.Fprintf(osStderr, "参数:\n")
+		fs.PrintDefaults()
 	}
-	flag.Parse()
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
 
 	if *showVer {
 		fmt.Printf("cwe-mcp: %s\nsdk: %s\n", mcpVersion, cweskills.Version)
-		return
+		return 0
 	}
 
 	xmlPath = *xml
 
-	// 预加载 XML（若指定）—— 失败不退出，离线工具调用时报错
 	if *xml != "" {
 		registryMu.Lock()
 		if err := loadRegistry(); err != nil {
@@ -97,8 +108,10 @@ func main() {
 			log.Fatalf("HTTP 服务器错误: %v", err)
 		}
 	default:
-		log.Fatalf("未知传输方式: %s", *transport)
+		fmt.Fprintf(osStderr, "未知传输方式: %s\n", *transport)
+		return 2
 	}
+	return 0
 }
 
 // loadRegistry 懒加载并构建 XML 注册表索引。
