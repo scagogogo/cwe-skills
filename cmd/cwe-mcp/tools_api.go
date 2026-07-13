@@ -9,6 +9,10 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// newAPIClient 构造在线 API 客户端，默认用 MITRE base URL。
+// 提取为包级变量以便测试注入指向 httptest server 的客户端。
+var newAPIClient = cweskills.NewAPIClient
+
 // registerAPITools 注册在线 MITRE API 工具。
 // 这些工具调用 MITRE REST API，受速率限制。
 func registerAPITools(s *server.MCPServer) {
@@ -27,7 +31,7 @@ func registerAPITools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
 			}
-			client := cweskills.NewAPIClient()
+			client := newAPIClient()
 			defer client.Close()
 			weakness, err := client.GetWeakness(ctx, id)
 			if err == nil {
@@ -69,7 +73,7 @@ func registerAPITools(s *server.MCPServer) {
 			if err != nil {
 				return errResult(fmt.Sprintf("invalid CWE ID: %v", err)), nil
 			}
-			client := cweskills.NewAPIClient()
+			client := newAPIClient()
 			defer client.Close()
 			parents, err := client.GetParents(ctx, id)
 			if err == nil {
@@ -102,7 +106,7 @@ func registerAPITools(s *server.MCPServer) {
 			mcp.WithDescription("Check the current MITRE CWE REST API version (online). Useful to verify API availability."),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			client := cweskills.NewAPIClient()
+			client := newAPIClient()
 			defer client.Close()
 			ver, err := client.GetVersion(ctx)
 			if err != nil {
