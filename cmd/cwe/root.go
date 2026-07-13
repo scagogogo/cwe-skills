@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/scagogogo/cwe-skills"
@@ -34,14 +35,25 @@ SDK版本: %s`, cweskills.Version),
 // outputFormat 输出格式：text 或 json
 var outputFormat string
 
+// osStderr 默认指向 os.Stderr，测试可替换以捕获输出。
+var osStderr io.Writer = os.Stderr
+
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "text", "输出格式 (text|json)")
 }
 
 // Execute 执行根命令
 func Execute() {
+	os.Exit(executeRoot())
+}
+
+// executeRoot 执行根命令并返回退出码。
+// 提取自 Execute 以便测试覆盖 cobra 执行成功与失败两条路径，
+// 而不触发 os.Exit。
+func executeRoot() int {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		fmt.Fprintln(osStderr, err)
+		return 1
 	}
+	return 0
 }
