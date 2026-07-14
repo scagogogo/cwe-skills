@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 

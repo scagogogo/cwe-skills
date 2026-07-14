@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 	"github.com/spf13/cobra"
 )
 
