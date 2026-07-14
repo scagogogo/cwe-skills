@@ -75,11 +75,11 @@ import (
     "log"
     "net/url"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewHTTPClient(cwe.DefaultBaseURL)
+    client := cweskills.NewHTTPClient(cweskills.DefaultBaseURL)
     defer client.Close()
 
     // Get + 自动解码

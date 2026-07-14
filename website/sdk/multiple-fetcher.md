@@ -78,14 +78,14 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
-    fetcher := cwe.NewMultipleFetcher(client)
+    fetcher := cweskills.NewMultipleFetcher(client)
 
     // 1. 批量获取到 map
     ids := []int{79, 89, 119, 20}
@@ -96,7 +96,7 @@ func main() {
     fmt.Println("获取到:", len(result), "条")
 
     // 2. 批量灌入 Registry
-    registry := cwe.NewRegistry()
+    registry := cweskills.NewRegistry()
     if err := fetcher.FetchMultipleToRegistry(context.Background(), ids, registry); err != nil {
         log.Fatal(err)
     }

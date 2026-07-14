@@ -56,11 +56,11 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
     version, err := client.GetVersion(context.Background())

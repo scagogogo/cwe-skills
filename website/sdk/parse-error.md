@@ -58,14 +58,14 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    parser := cwe.NewXMLParser()
+    parser := cweskills.NewXMLParser()
     _, err := parser.ParseBytes([]byte("<not-valid-xml>"))
     if err != nil {
-        var pe *cwe.ParseError
+        var pe *cweskills.ParseError
         if errors.As(err, &pe) {
             fmt.Println("错误码:", pe.Code)
             fmt.Println("详情:", pe.Detail)

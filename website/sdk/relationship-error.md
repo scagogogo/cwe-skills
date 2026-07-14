@@ -72,12 +72,12 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    err := cwe.NewRelationshipError("CWE-79", "CWE-79", cwe.RelationshipChildOf)
-    var relErr *cwe.RelationshipError
+    err := cweskills.NewRelationshipError("CWE-79", "CWE-79", cweskills.RelationshipChildOf)
+    var relErr *cweskills.RelationshipError
     if errors.As(err, &relErr) {
         fmt.Printf("拒绝 %s -> %s (%s)\n", relErr.From, relErr.To, relErr.Nature)
     }
@@ -89,12 +89,12 @@ func main() {
 本地构建 CWE 关系图时，可这样使用：
 
 ```go
-func addEdge(graph *Graph, from, to string, nature cwe.RelationshipNature) error {
+func addEdge(graph *Graph, from, to string, nature cweskills.RelationshipNature) error {
     if from == to {
-        return cwe.NewRelationshipError(from, to, nature) // 禁止自环
+        return cweskills.NewRelationshipError(from, to, nature) // 禁止自环
     }
     if graph.hasEdge(from, to, nature) {
-        return cwe.NewRelationshipError(from, to, nature) // 禁止重复
+        return cweskills.NewRelationshipError(from, to, nature) // 禁止重复
     }
     graph.addEdge(from, to, nature)
     return nil

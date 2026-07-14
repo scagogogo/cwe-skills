@@ -61,11 +61,11 @@ import (
     "fmt"
     "time"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    limiter := cwe.NewRateLimiter(1.0, 5) // 每秒1个，突发5个
+    limiter := cweskills.NewRateLimiter(1.0, 5) // 每秒1个，突发5个
 
     // 突发5个立即通过
     for i := 0; i < 5; i++ {

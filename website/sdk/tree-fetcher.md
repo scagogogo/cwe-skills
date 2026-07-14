@@ -81,14 +81,14 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
-    fetcher := cwe.NewTreeFetcher(client, nil, 3)
+    fetcher := cweskills.NewTreeFetcher(client, nil, 3)
     if err := fetcher.FetchFullTree(context.Background(), 79); err != nil {
         log.Fatal(err)
     }

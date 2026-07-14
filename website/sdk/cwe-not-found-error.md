@@ -55,16 +55,16 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
     _, err := client.GetWeakness(context.Background(), 999999)
     if err != nil {
-        var notFound *cwe.CWENotFoundError
+        var notFound *cweskills.CWENotFoundError
         if errors.As(err, &notFound) {
             fmt.Printf("CWE-%d 不存在\n", notFound.ID)
         }

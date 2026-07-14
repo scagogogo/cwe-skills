@@ -57,16 +57,16 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
     _, err := client.GetWeakness(context.Background(), 0)
     if err != nil {
-        var invalid *cwe.InvalidCWEIDError
+        var invalid *cweskills.InvalidCWEIDError
         if errors.As(err, &invalid) {
             fmt.Println("错误码:", invalid.Code)
             fmt.Println("无效输入:", invalid.ID)

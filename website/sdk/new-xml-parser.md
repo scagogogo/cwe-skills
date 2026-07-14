@@ -31,11 +31,11 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    parser := cwe.NewXMLParser()
+    parser := cweskills.NewXMLParser()
 
     // 也可从字节切片解析（这里用最小占位 XML）
     xmlData := []byte(`

@@ -52,16 +52,16 @@ import (
     "fmt"
     "time"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
     _, err := client.GetWeakness(context.Background(), 79)
     if err != nil {
-        var rl *cwe.RateLimitError
+        var rl *cweskills.RateLimitError
         if errors.As(err, &rl) {
             fmt.Printf("被限流，建议等待 %v\n", rl.RetryAfter)
             time.Sleep(rl.RetryAfter)
@@ -72,7 +72,7 @@ func main() {
 ```
 
 ::: warning SDK 默认不会返回此错误
-当前 `HTTPClient` 在传输层用 `RateLimiter.Wait` 阻塞，不会主动构造 `RateLimitError`。它主要为上层应用或自定义 Transport 解析 HTTP 429 后抛出而保留。若你实现了 429 检测，应 `return cwe.NewRateLimitError(retryAfter)`。
+当前 `HTTPClient` 在传输层用 `RateLimiter.Wait` 阻塞，不会主动构造 `RateLimitError`。它主要为上层应用或自定义 Transport 解析 HTTP 429 后抛出而保留。若你实现了 429 检测，应 `return cweskills.NewRateLimitError(retryAfter)`。
 :::
 
 ## 📚 相关链接

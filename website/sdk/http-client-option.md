@@ -77,7 +77,7 @@ import (
     "net/http"
     "time"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
@@ -88,12 +88,12 @@ func main() {
         },
     }
 
-    client := cwe.NewHTTPClient(
-        cwe.DefaultBaseURL,
-        cwe.WithHTTPClient(customHTTP),
-        cwe.WithUserAgent("my-scanner/2.1"),
-        cwe.WithRetry(3, time.Second),
-        cwe.WithHTTPRateLimiter(0.5, 2),
+    client := cweskills.NewHTTPClient(
+        cweskills.DefaultBaseURL,
+        cweskills.WithHTTPClient(customHTTP),
+        cweskills.WithUserAgent("my-scanner/2.1"),
+        cweskills.WithRetry(3, time.Second),
+        cweskills.WithHTTPRateLimiter(0.5, 2),
     )
     defer client.Close()
 

@@ -68,11 +68,11 @@ import (
     "log"
     "strings"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    parser := cwe.NewXMLParser()
+    parser := cweskills.NewXMLParser()
 
     // 1. 从文件解析
     registry, err := parser.ParseFile("cwec_v4.10.xml")

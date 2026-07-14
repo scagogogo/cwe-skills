@@ -64,11 +64,11 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    base := &cwe.CWEError{
+    base := &cweskills.CWEError{
         Code:    "CUSTOM",
         Message: "自定义错误",
         Detail:  "上下文信息",
@@ -76,7 +76,7 @@ func main() {
     fmt.Println(base.Error())
     // 输出: cwe: [CUSTOM] 自定义错误: 上下文信息
 
-    var target *cwe.CWEError
+    var target *cweskills.CWEError
     fmt.Println(errors.As(base, &target)) // true
 }
 ```

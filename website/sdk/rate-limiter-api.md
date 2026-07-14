@@ -67,19 +67,19 @@ import (
     "fmt"
     "time"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    limiter := cwe.NewRateLimiter(0.5, 3)
+    limiter := cweskills.NewRateLimiter(0.5, 3)
     fmt.Printf("rate=%.2f burst=%d\n", limiter.GetRate(), limiter.GetBurst())
 
     limiter.SetInterval(2 * time.Second)
     fmt.Printf("调整后 rate=%.2f\n", limiter.GetRate())
 
-    client := cwe.NewHTTPClient(
-        cwe.DefaultBaseURL,
-        cwe.WithHTTPRateLimiter(1.0, 5),
+    client := cweskills.NewHTTPClient(
+        cweskills.DefaultBaseURL,
+        cweskills.WithHTTPRateLimiter(1.0, 5),
     )
     defer client.Close()
 

@@ -86,14 +86,14 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
-    var fetcher cwe.DataFetcher = cwe.NewBasicFetcher(client)
+    var fetcher cweskills.DataFetcher = cweskills.NewBasicFetcher(client)
     w, err := fetcher.Fetch(context.Background(), 79)
     if err != nil {
         log.Fatal(err)

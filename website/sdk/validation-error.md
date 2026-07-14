@@ -60,14 +60,14 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    parser := cwe.NewXMLParser()
+    parser := cweskills.NewXMLParser()
     _, err := parser.ParseFile("")
     if err != nil {
-        var ve *cwe.ValidationError
+        var ve *cweskills.ValidationError
         if errors.As(err, &ve) {
             fmt.Printf("字段 %q 值 %q 无效\n", ve.Field, ve.Value)
         }

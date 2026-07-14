@@ -65,16 +65,16 @@ import (
     "errors"
     "fmt"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient(cwe.WithAPIBaseURL("https://invalid.example/api/v1"))
+    client := cweskills.NewAPIClient(cweskills.WithAPIBaseURL("https://invalid.example/api/v1"))
     defer client.Close()
 
     _, err := client.GetVersion(context.Background())
     if err != nil {
-        var apiErr *cwe.APIError
+        var apiErr *cweskills.APIError
         if errors.As(err, &apiErr) {
             fmt.Printf("HTTP %d %s %s\n", apiErr.StatusCode, apiErr.Method, apiErr.URL)
             if apiErr.StatusCode >= 500 {

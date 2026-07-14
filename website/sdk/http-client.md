@@ -89,15 +89,15 @@ import (
     "log"
     "time"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewHTTPClient(
-        cwe.DefaultBaseURL,
-        cwe.WithRetry(3, 2*time.Second),
-        cwe.WithHTTPRateLimiter(1.0, 5),
-        cwe.WithHTTPTimeout(30*time.Second),
+    client := cweskills.NewHTTPClient(
+        cweskills.DefaultBaseURL,
+        cweskills.WithRetry(3, 2*time.Second),
+        cweskills.WithHTTPRateLimiter(1.0, 5),
+        cweskills.WithHTTPTimeout(30*time.Second),
     )
     defer client.Close()
 

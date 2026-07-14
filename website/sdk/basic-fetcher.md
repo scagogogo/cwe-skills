@@ -52,8 +52,8 @@ func (f *BasicFetcher) FetchWithRelations(ctx context.Context, id int, viewID ..
 流程：
 
 1. `GetWeakness(ctx, id)` 拿到本体。
-2. `GetParents(ctx, id, viewID...)` 拿父级，每条 `Nature` 改写为 `RelationshipChildOf`，追加到 `cwe.Relationships`。
-3. `GetChildren(ctx, id, viewID...)` 拿子级，每条 `Nature` 改写为 `RelationshipParentOf`，追加到 `cwe.Relationships`。
+2. `GetParents(ctx, id, viewID...)` 拿父级，每条 `Nature` 改写为 `RelationshipChildOf`，追加到 `cweskills.Relationships`。
+3. `GetChildren(ctx, id, viewID...)` 拿子级，每条 `Nature` 改写为 `RelationshipParentOf`，追加到 `cweskills.Relationships`。
 4. 父/子获取出错时**静默跳过**（`err == nil` 才追加），本体仍返回。
 
 ::: tip 一步拿到邻居
@@ -74,14 +74,14 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
-    fetcher := cwe.NewBasicFetcher(client)
+    fetcher := cweskills.NewBasicFetcher(client)
 
     w, err := fetcher.FetchWithRelations(context.Background(), 79, 1000)
     if err != nil {

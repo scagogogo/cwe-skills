@@ -94,11 +94,11 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    parser := cwe.NewXMLParser()
+    parser := cweskills.NewXMLParser()
     registry, err := parser.ParseFile("cwec_v4.10.xml")
     if err != nil {
         log.Fatal(err)

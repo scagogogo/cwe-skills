@@ -88,11 +88,11 @@ import (
     "fmt"
     "log"
 
-    cwe "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient()
+    client := cweskills.NewAPIClient()
     defer client.Close()
 
     var resp struct {
@@ -101,7 +101,7 @@ func main() {
     if err := client.GetHTTPClient().Get(context.Background(), "/version", &resp); err != nil {
         log.Fatal(err)
     }
-    var v cwe.VersionResponse
+    var v cweskills.VersionResponse
     _ = json.Unmarshal(resp.Data, &v)
     fmt.Println(v.Version)
 }
