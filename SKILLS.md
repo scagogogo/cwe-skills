@@ -116,7 +116,7 @@ https://github.com/scagogogo/cwe-skills/tree/main/docs/skills
 If you need programmatic access in Go:
 
 ```go
-import cweskills "github.com/scagogogo/cwe-skills"
+import "github.com/scagogogo/cwe-skills"
 
 id, _ := cweskills.ParseCWEID("CWE-79")
 cweskills.IsInTop25(79)  // true

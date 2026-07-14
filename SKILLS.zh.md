@@ -116,7 +116,7 @@ https://github.com/scagogogo/cwe-skills/tree/main/docs/skills
 如需 Go 程序化访问：
 
 ```go
-import cweskills "github.com/scagogogo/cwe-skills"
+import "github.com/scagogogo/cwe-skills"
 
 id, _ := cweskills.ParseCWEID("CWE-79")
 cweskills.IsInTop25(79)  // true

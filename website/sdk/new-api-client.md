@@ -88,17 +88,17 @@ import (
     "log"
     "time"
 
-    cwe "github.com/scaggogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {
-    client := cwe.NewAPIClient(
-        cwe.WithAPIBaseURL("https://cwe-mirror.internal/api/v1"),
-        cwe.WithAPITimeout(60*time.Second),
-        cwe.WithAPIRateLimit(1.0, 5),       // 每秒1个，突发5个
-        cwe.WithAPIRetry(3, 2*time.Second), // 5xx最多重试3次
-        cwe.WithAPIHTTPClient(
-            cwe.WithUserAgent("my-app/1.0"),
+    client := cweskills.NewAPIClient(
+        cweskills.WithAPIBaseURL("https://cwe-mirror.internal/api/v1"),
+        cweskills.WithAPITimeout(60*time.Second),
+        cweskills.WithAPIRateLimit(1.0, 5),       // 每秒1个，突发5个
+        cweskills.WithAPIRetry(3, 2*time.Second), // 5xx最多重试3次
+        cweskills.WithAPIHTTPClient(
+            cweskills.WithUserAgent("my-app/1.0"),
         ),
     )
     defer client.Close()
@@ -116,13 +116,13 @@ func main() {
 :::
 
 ::: details 零参数等价写法
-`cwe.NewAPIClient()` 与下面这段完全等价：
+`cweskills.NewAPIClient()` 与下面这段完全等价：
 
 ```go
-cwe.NewAPIClient(
-    cwe.WithAPIBaseURL(cwe.DefaultBaseURL),
-    cwe.WithAPITimeout(cwe.DefaultTimeout),
-    cwe.WithAPIRateLimit(0.1, 1),
+cweskills.NewAPIClient(
+    cweskills.WithAPIBaseURL(cweskills.DefaultBaseURL),
+    cweskills.WithAPITimeout(cweskills.DefaultTimeout),
+    cweskills.WithAPIRateLimit(0.1, 1),
 )
 ```
 :::
