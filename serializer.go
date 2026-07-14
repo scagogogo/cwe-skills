@@ -69,6 +69,11 @@ func UnmarshalJSONList(data []byte) ([]*CWE, error) {
 
 // ========== XML序列化 ==========
 
+// xmlMarshalIndenter 抽象 xml.MarshalIndent，便于测试注入错误。
+// 默认指向 xml.MarshalIndent，对合法 safeCWE 不会返回错误；
+// 测试可替换为返回错误的实现以覆盖错误分支。
+var xmlMarshalIndenter = xml.MarshalIndent
+
 // MarshalXML 将CWE条目序列化为XML格式。
 func MarshalXML(cwe *CWE) ([]byte, error) {
 	if cwe == nil {
@@ -78,7 +83,7 @@ func MarshalXML(cwe *CWE) ([]byte, error) {
 	// 使用SafeCWE避免循环引用
 	safe := toSafeCWE(cwe)
 
-	output, err := xml.MarshalIndent(safe, "", "  ")
+	output, err := xmlMarshalIndenter(safe, "", "  ")
 	if err != nil {
 		return nil, NewParseError(fmt.Sprintf("XML序列化失败: %v", err), 0)
 	}
@@ -153,14 +158,25 @@ func fromSafeCWE(safe *safeCWE) *CWE {
 // csvHeader CSV文件的表头
 var csvHeader = []string{"ID", "Name", "Abstraction", "Structure", "Status", "Description", "LikelihoodOfExploit"}
 
+// csvSink 是 csv.Writer 的底层写入目标。默认返回新 *bytes.Buffer（与原行为一致）；
+// 测试可替换为「写 N 次后返回 error」的 fake io.Writer，使 csv.Writer 在 Flush
+// 时底层写失败、writer.Error() 非 nil，从而覆盖 MarshalCSV 的 Flush 错误分支。
+var csvSink = func() io.Writer { return new(bytes.Buffer) }
+
 // MarshalCSV 将CWE条目列表序列化为CSV格式。
 func MarshalCSV(cwes []*CWE) ([]byte, error) {
 	if cwes == nil {
 		return []byte{}, nil
 	}
 
-	var buf bytes.Buffer
-	writer := csv.NewWriter(&buf)
+	sink := csvSink()
+	buf, _ := sink.(*bytes.Buffer)
+	if buf == nil {
+		// 测试注入了非 *bytes.Buffer 的 sink（如错误 writer）：
+		// 无法收集字节，但仍走完整写入流程以触发错误分支。
+		buf = new(bytes.Buffer)
+	}
+	writer := csv.NewWriter(sink)
 
 	// 写入表头
 	if err := writer.Write(csvHeader); err != nil {

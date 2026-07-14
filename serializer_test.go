@@ -3,6 +3,9 @@ package cweskills
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
+	"io"
+	"strings"
 	"testing"
 )
 
@@ -1209,5 +1212,66 @@ func TestUnmarshalXML_MinimalXML(t *testing.T) {
 	}
 	if cwe.Description != "desc" {
 		t.Errorf("Description = %q, want %q", cwe.Description, "desc")
+	}
+}
+
+// ==================== 错误分支注入测试 ====================
+
+// TestMarshalXML_MarshalError 覆盖 xmlMarshalIndenter 返回错误分支：
+// 注入一个永远报错的 marshal 函数，断言走 NewParseError 错误路径。
+func TestMarshalXML_MarshalError(t *testing.T) {
+	orig := xmlMarshalIndenter
+	xmlMarshalIndenter = func(v any, prefix, indent string) ([]byte, error) {
+		return nil, fmt.Errorf("injected xml error")
+	}
+	t.Cleanup(func() { xmlMarshalIndenter = orig })
+
+	cwe := &CWE{ID: 79, Name: "XSS", Description: "desc", CWEType: "weakness"}
+	_, err := MarshalXML(cwe)
+	if err == nil {
+		t.Fatal("MarshalXML with failing xmlMarshalIndenter: want error, got nil")
+	}
+	if !strings.Contains(err.Error(), "injected xml error") {
+		t.Errorf("want error wrapping injected text, got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "XML序列化失败") {
+		t.Errorf("want NewParseError prefix, got: %v", err)
+	}
+}
+
+// errWriter 是一个 io.Writer，写满第 failAfter 次后返回 error。
+// csv.Writer 是缓冲型：Write 总返回 nil，底层写错误延迟到 Flush 后
+// 由 writer.Error() 暴露。故用 errWriter 触发 Flush 后的 Error 分支。
+type errWriter struct {
+	failAfter int
+	calls     int
+}
+
+func (w *errWriter) Write(p []byte) (int, error) {
+	w.calls++
+	if w.calls > w.failAfter {
+		return 0, fmt.Errorf("injected write error #%d", w.calls)
+	}
+	return len(p), nil
+}
+
+// TestMarshalCSV_FlushError 覆盖 writer.Error() 非 nil 分支（Flush 后底层写失败）。
+// failAfter=0：第 1 次底层写即报错，csv 缓冲在 Flush 时写出失败，
+// writer.Error() 返回注入错误，MarshalCSV 走 NewParseError("CSV刷新失败") 路径。
+func TestMarshalCSV_FlushError(t *testing.T) {
+	orig := csvSink
+	csvSink = func() io.Writer { return &errWriter{failAfter: 0} }
+	t.Cleanup(func() { csvSink = orig })
+
+	cwes := []*CWE{{ID: 79, Name: "XSS", Description: "desc"}}
+	_, err := MarshalCSV(cwes)
+	if err == nil {
+		t.Fatal("MarshalCSV with flush error: want error, got nil")
+	}
+	if !strings.Contains(err.Error(), "CSV刷新失败") {
+		t.Errorf("want flush error, got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "injected write error") {
+		t.Errorf("want error wrapping injected text, got: %v", err)
 	}
 }
