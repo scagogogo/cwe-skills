@@ -34,6 +34,17 @@ var mcpVersion = "0.1.0"
 // osStderr 默认指向 os.Stderr，测试可替换为任意 io.Writer 以捕获输出。
 var osStderr io.Writer = os.Stderr
 
+// serveStdio 默认指向 server.ServeStdio，测试可替换为立即返回的 fake
+// 以覆盖 stdio 分支而不阻塞。
+var serveStdio = server.ServeStdio
+
+// newSSEServer 默认指向 server.NewSSEServer，测试可替换。
+var newSSEServer = server.NewSSEServer
+
+// sseStart 可选地覆盖 *server.SSEServer.Start；nil 时回退到真实 srv.Start。
+// 测试替换为立即返回 nil/err 的 fake 以覆盖 http 分支而不阻塞。
+var sseStart func(addr string) error
+
 // 全局状态：离线注册表（懒加载）
 var (
 	xmlPath     string
@@ -98,13 +109,17 @@ func runMain(args []string) int {
 
 	switch *transport {
 	case "stdio":
-		if err := server.ServeStdio(s); err != nil {
+		if err := serveStdio(s); err != nil {
 			log.Fatalf("stdio 服务器错误: %v", err)
 		}
 	case "http":
-		srv := server.NewSSEServer(s)
+		srv := newSSEServer(s)
 		log.Printf("MCP SSE 服务器监听 %s", *addr)
-		if err := srv.Start(*addr); err != nil {
+		start := sseStart
+		if start == nil {
+			start = srv.Start
+		}
+		if err := start(*addr); err != nil {
 			log.Fatalf("HTTP 服务器错误: %v", err)
 		}
 	default:
