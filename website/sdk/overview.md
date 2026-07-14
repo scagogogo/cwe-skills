@@ -15,7 +15,7 @@ go get github.com/scagogogo/cwe-skills
 ```
 
 ```go
-import cweskills "github.com/scagogogo/cwe-skills"
+import "github.com/scagogogo/cwe-skills"
 ```
 
 ::: warning 包名与模块名
@@ -148,7 +148,7 @@ package main
 import (
     "context"
     "fmt"
-    cweskills "github.com/scagogogo/cwe-skills"
+    "github.com/scagogogo/cwe-skills"
 )
 
 func main() {

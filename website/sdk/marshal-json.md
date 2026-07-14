@@ -41,7 +41,7 @@ package main
 import (
 	"fmt"
 	"log"
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 )
 
 func main() {

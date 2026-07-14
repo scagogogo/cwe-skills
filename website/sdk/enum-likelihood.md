@@ -69,7 +69,7 @@ package main
 import (
 	"fmt"
 	"sort"
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 )
 
 func main() {

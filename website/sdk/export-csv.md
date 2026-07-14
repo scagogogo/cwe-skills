@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 )
 
 func main() {

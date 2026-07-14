@@ -30,7 +30,7 @@ package main
 
 import (
 	"fmt"
-	cweskills "github.com/scagogogo/cwe-skills"
+	"github.com/scagogogo/cwe-skills"
 )
 
 func main() {
