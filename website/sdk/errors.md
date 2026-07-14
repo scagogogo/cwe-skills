@@ -40,24 +40,24 @@ type InvalidCWEIDError struct {
 ```go
 var err error = client.GetWeakness(ctx, 79)
 
-var notFound *cwe.CWENotFoundError
+var notFound *cweskills.CWENotFoundError
 if errors.As(err, &notFound) {
     // 404，降级处理
 }
 
-var apiErr *cwe.APIError
+var apiErr *cweskills.APIError
 if errors.As(err, &apiErr) && apiErr.StatusCode >= 500 {
     // 5xx，可重试
 }
 
-var invalid *cwe.InvalidCWEIDError
+var invalid *cweskills.InvalidCWEIDError
 if errors.As(err, &invalid) {
     // 入参问题，不应重试
 }
 ```
 
 ::: tip 用 errors.As 而非类型断言
-`errors.As` 会沿 `Unwrap` 链查找，对内嵌 `*CWEError` 的细分类型也能正确匹配。直接 `err.(*cwe.APIError)` 可能因包装层而失败。
+`errors.As` 会沿 `Unwrap` 链查找，对内嵌 `*CWEError` 的细分类型也能正确匹配。直接 `err.(*cweskills.APIError)` 可能因包装层而失败。
 :::
 
 ::: warning Code 是字符串常量
