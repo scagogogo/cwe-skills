@@ -1275,3 +1275,59 @@ func TestMarshalCSV_FlushError(t *testing.T) {
 		t.Errorf("want error wrapping injected text, got: %v", err)
 	}
 }
+
+// TestMarshalCSV_RecordWriteError 覆盖 writer.Write(record) 的 err 分支
+// （serializer.go:197-199）。
+//
+// 实测：csv.Writer 内部用 bufio.Writer（默认 4096 字节缓冲）。单条 record
+// 累积超过 4096 字节即触发底层 io.Writer.Write；errWriter failAfter=0
+// 第 1 次底层写即报错，csv.Writer.Write 返回该 error，MarshalCSV 走
+// NewParseError("CSV写入数据失败") 路径。
+func TestMarshalCSV_RecordWriteError(t *testing.T) {
+	orig := csvSink
+	csvSink = func() io.Writer { return &errWriter{failAfter: 0} }
+	t.Cleanup(func() { csvSink = orig })
+
+	longDesc := strings.Repeat("x", 5000) // 撑爆 bufio 4096 缓冲
+	cwes := []*CWE{{ID: 79, Name: "XSS", Description: longDesc}}
+	_, err := MarshalCSV(cwes)
+	if err == nil {
+		t.Fatal("MarshalCSV with record write error: want error, got nil")
+	}
+	if !strings.Contains(err.Error(), "CSV写入数据失败") {
+		t.Errorf("want record write error, got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "injected write error") {
+		t.Errorf("want error wrapping injected text, got: %v", err)
+	}
+}
+
+// TestMarshalCSV_HeaderWriteError 覆盖 writer.Write(csvHeader) 的 err 分支
+// （serializer.go:182-184）。
+//
+// csvHeader 默认 7 个短词总量 <4096，Write 只缓冲不触发底层写（实测 calls=0），
+// 故正常不可达。csvHeader 是包级 var，测试临时注入含超长字段的表头撑爆
+// bufio 缓冲触发底层写，errWriter failAfter=0 第 1 次即报错，
+// csv.Writer.Write 返回 error，MarshalCSV 走 NewParseError("CSV写入表头失败") 路径。
+func TestMarshalCSV_HeaderWriteError(t *testing.T) {
+	origSink := csvSink
+	origHeader := csvHeader
+	csvSink = func() io.Writer { return &errWriter{failAfter: 0} }
+	csvHeader = []string{strings.Repeat("h", 5000)} // 撑爆 bufio 缓冲
+	t.Cleanup(func() {
+		csvSink = origSink
+		csvHeader = origHeader
+	})
+
+	cwes := []*CWE{{ID: 79, Name: "XSS", Description: "desc"}}
+	_, err := MarshalCSV(cwes)
+	if err == nil {
+		t.Fatal("MarshalCSV with header write error: want error, got nil")
+	}
+	if !strings.Contains(err.Error(), "CSV写入表头失败") {
+		t.Errorf("want header write error, got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "injected write error") {
+		t.Errorf("want error wrapping injected text, got: %v", err)
+	}
+}
