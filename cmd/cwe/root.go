@@ -38,13 +38,17 @@ var outputFormat string
 // osStderr 默认指向 os.Stderr，测试可替换以捕获输出。
 var osStderr io.Writer = os.Stderr
 
+// osExit 默认指向 os.Exit，测试可替换为不退出进程的 fake
+// 以覆盖 main/Execute 的 os.Exit 调用点。
+var osExit = os.Exit
+
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "text", "输出格式 (text|json)")
 }
 
 // Execute 执行根命令
 func Execute() {
-	os.Exit(executeRoot())
+	osExit(executeRoot())
 }
 
 // executeRoot 执行根命令并返回退出码。
