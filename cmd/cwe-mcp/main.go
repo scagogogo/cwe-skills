@@ -45,6 +45,14 @@ var newSSEServer = server.NewSSEServer
 // 测试替换为立即返回 nil/err 的 fake 以覆盖 http 分支而不阻塞。
 var sseStart func(addr string) error
 
+// osExit 默认指向 os.Exit，测试可替换为不退出进程的 fake
+// 以覆盖 main 的 os.Exit 调用点。
+var osExit = os.Exit
+
+// fatalf 默认指向 log.Fatalf，测试可替换为不退出进程的 fake
+// 以覆盖 runMain 中 stdio/http 错误的 log.Fatalf 调用点。
+var fatalf = log.Fatalf
+
 // 全局状态：离线注册表（懒加载）
 var (
 	xmlPath     string
@@ -54,7 +62,7 @@ var (
 )
 
 func main() {
-	os.Exit(runMain(os.Args[1:]))
+	osExit(runMain(os.Args[1:]))
 }
 
 // runMain 解析参数并按 transport 启动服务器，返回进程退出码。
@@ -110,7 +118,7 @@ func runMain(args []string) int {
 	switch *transport {
 	case "stdio":
 		if err := serveStdio(s); err != nil {
-			log.Fatalf("stdio 服务器错误: %v", err)
+			fatalf("stdio 服务器错误: %v", err)
 		}
 	case "http":
 		srv := newSSEServer(s)
@@ -120,7 +128,7 @@ func runMain(args []string) int {
 			start = srv.Start
 		}
 		if err := start(*addr); err != nil {
-			log.Fatalf("HTTP 服务器错误: %v", err)
+			fatalf("HTTP 服务器错误: %v", err)
 		}
 	default:
 		fmt.Fprintf(osStderr, "未知传输方式: %s\n", *transport)
